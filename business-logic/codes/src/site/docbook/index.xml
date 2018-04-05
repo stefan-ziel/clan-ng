@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN"
+		"http://docbook.org/xml/simple/1.1/sdocbook.dtd">
+
+<article>
+	<title>Codes</title>
+	<para>
+		Dieses Modul enthält alle DTOs für die Behandlung von Codes, die gehörende Tabellenentities und
+		Constraint Validation services und Annotations.
+	</para>
+</article>

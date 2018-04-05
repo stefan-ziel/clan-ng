@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.claninfo.ch/2001/proto" xmlns:ldap="http://www.claninfo.ch/2005/ldap" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:proto="http://www.claninfo.ch/2001/proto" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.claninfo.ch/2005/ldap" schemaLocation="ldap.xsd"/>
+	<xs:element name="Modus">
+		<xs:annotation>
+			<xs:documentation>Bildet das Root-Element des XML- Dokuments</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice minOccurs="0">
+				<xs:element ref="proto:Err"/>
+				<xs:sequence>
+					<xs:annotation>
+						<xs:documentation>Antwort des Servers auf eine Anmeldung</xs:documentation>
+					</xs:annotation>
+					<xs:element name="Session">
+						<xs:annotation>
+							<xs:documentation>Ist pro XML-Dokument nur einmal vorhanden. Nach erfolgreichem Login identifiziert sich der User nur noch über die Session-Nummer.
+							</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:attribute name="Nr" type="xs:token" use="required">
+								<xs:annotation>
+									<xs:documentation>Wird von der Methode Login gelöst und ermöglicht die Identifikation des User für jede weitere Verarbeitung über diese Nummer
+										durchzuführen.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:complexType>
+					</xs:element>
+					<xs:element ref="ldap:Permissions"/>
+				</xs:sequence>
+				<xs:element name="Tx" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>Normale Serverantwort</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:choice>
+							<xs:element name="Bo" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>BusinessObject: Innerhalb einer Transaktion können mehrere BO_s aufgerufen werden.</xs:documentation>
+									<xs:documentation>BusinessObject: Innerhalb einer Transaktion können mehrere BO_s aufgerufen werden.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:choice>
+										<xs:element name="Method" maxOccurs="unbounded">
+											<xs:annotation>
+												<xs:documentation>Methode: Innerhalbe eines BO_s können mehrere Methoden aufgerufen werden.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:choice>
+													<xs:element name="Record" maxOccurs="unbounded" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Es können mehrere PRECORD_s innerhalb einer Methode vorkommen.</xs:documentation>
+														</xs:annotation>
+														<xs:complexType>
+															<xs:choice>
+																<xs:element name="Par" minOccurs="0" maxOccurs="unbounded">
+																	<xs:annotation>
+																		<xs:documentation>Parameter</xs:documentation>
+																	</xs:annotation>
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute name="Name" use="required">
+																					<xs:annotation>
+																						<xs:documentation>Identifiziert den Parameter. Abhängig von der Methode wird die der
+																							Parameter und dessen Wert vom Servlet unterschiedlich interpretieren.
+																						</xs:documentation>
+																					</xs:annotation>
+																					<xs:simpleType>
+																						<xs:union>
+																							<xs:simpleType>
+																								<xs:restriction base="xs:NMTOKEN">
+																									<xs:pattern value="[p][A-Z][_1-9A-Z]*"/>
+																								</xs:restriction>
+																							</xs:simpleType>
+																						</xs:union>
+																					</xs:simpleType>
+																				</xs:attribute>
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element ref="proto:Err"/>
+															</xs:choice>
+															<xs:attribute name="Id" type="xs:int" use="required">
+																<xs:annotation>
+																	<xs:documentation>Identifiziert die Parameterliste innerhalb einer Methode.</xs:documentation>
+																</xs:annotation>
+															</xs:attribute>
+														</xs:complexType>
+													</xs:element>
+													<xs:element ref="proto:Err"/>
+												</xs:choice>
+												<xs:attribute name="ReturnRec" type="xs:int" use="optional">
+													<xs:annotation>
+														<xs:documentation>Anzahl Records in diesem XM-Dokument.</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+												<xs:attribute name="EstRec" type="xs:int" use="optional">
+													<xs:annotation>
+														<xs:documentation>Anzahl geschätzter Records.</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+												<xs:attribute name="Name" use="required">
+													<xs:annotation>
+														<xs:documentation>Identifiziert welche Methode innerhalb des BO_s vom Servlet aufgerufen werden soll / wurde.
+														</xs:documentation>
+													</xs:annotation>
+													<xs:simpleType>
+														<xs:restriction base="xs:NMTOKEN">
+															<xs:enumeration value="INS"/>
+															<xs:enumeration value="UPD"/>
+															<xs:enumeration value="DEL"/>
+															<xs:enumeration value="SEL"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+											</xs:complexType>
+										</xs:element>
+										<xs:element ref="proto:Err"/>
+									</xs:choice>
+									<xs:attribute name="Modul" type="xs:Name" use="required">
+										<xs:annotation>
+											<xs:documentation>Modul in dem das BO definiert ist</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="Name" type="xs:Name" use="required">
+										<xs:annotation>
+											<xs:documentation>Identifiziert welches Business-Object von Servlet auszuführen ist.</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="Version" type="xs:decimal" use="required">
+										<xs:annotation>
+											<xs:documentation>Dient der Entkopplung von Client und Servlet. Wird aktuell nicht verwendet (Wert immer 1).</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="Flag" type="xs:decimal" use="required">
+										<xs:annotation>
+											<xs:documentation>Dient der Steuerung bei einer zukünftigen Versionierung. Wird aktuell nicht verwendet (Wert immer 0)
+											</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+							<xs:element ref="proto:Err"/>
+						</xs:choice>
+						<xs:attribute name="Id" type="xs:int" use="required">
+							<xs:annotation>
+								<xs:documentation>Identifiziert die Transaktion innerhalb eines XML-Dokument.</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="Mode" use="required">
+							<xs:annotation>
+								<xs:documentation>Synchroner oder asynchroner Ausführungsmodus für DML Transaktionen.</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:NMTOKEN">
+									<xs:enumeration value="SYNC"/>
+									<xs:enumeration value="ASYNC"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="Error" type="xs:boolean" use="optional">
+							<xs:annotation>
+								<xs:documentation>Sagt aus ob innerhalb dieser Transaktion ein Fehler aufgetreten ist.</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Permissions">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Permission">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:boolean">
+											<xs:attribute name="Type" type="xs:integer" use="required"/>
+											<xs:attribute name="Key" type="xs:string" use="required"/>
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+			<xs:attribute name="Op" use="required">
+				<xs:annotation>
+					<xs:documentation>Identifiziert die Art der Verarbeitung.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:NMTOKEN">
+						<xs:enumeration value="PROD">
+							<xs:annotation>
+								<xs:documentation>Produktion</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="SIM">
+							<xs:annotation>
+								<xs:documentation>Simulation</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="LOGIN">
+							<xs:annotation>
+								<xs:documentation>LOGIN -> Login (siehe Kapitel Login)</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="PASSWD">
+							<xs:annotation>
+								<xs:documentation>Identifiziert die Art der Verarbeitung. PROD -> Produktion; SIM -> Simulation; LOGIN -> Login (siehe Kapitel Login)
+								</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="ALTERSESSION">
+							<xs:annotation>
+								<xs:documentation>Identifiziert die Art der Verarbeitung. PROD -> Produktion; SIM -> Simulation; LOGIN -> Login (siehe Kapitel Login)
+								</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+		<xs:unique name="tx-constraint">
+			<xs:selector xpath="TX"/>
+			<xs:field xpath="ID"/>
+		</xs:unique>
+	</xs:element>
+	<xs:element name="Err">
+		<xs:annotation>
+			<xs:documentation>Fehler aufgetreten. Die Anzahl der Detail-informationen ist unterschiedlich. Die einzelnen Details werden mittels ID und dessen Wert identifiziert.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Fm" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>Fehlermeldung</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Nr" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>Fehlernummer</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Text" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>Fehlertext</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="Typ" use="required">
+							<xs:annotation>
+								<xs:documentation>Typ der Meldung</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:NMTOKEN">
+									<xs:enumeration value="HF">
+										<xs:annotation>
+											<xs:documentation>Hauptfehlermeldung</xs:documentation>
+										</xs:annotation>
+									</xs:enumeration>
+									<xs:enumeration value="FM">
+										<xs:annotation>
+											<xs:documentation>Detailinformationen</xs:documentation>
+										</xs:annotation>
+									</xs:enumeration>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="Id" type="xs:int" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="Typ" use="required">
+				<xs:annotation>
+					<xs:documentation>Typ (Schwere) des Fehlers</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:NMTOKEN">
+						<xs:enumeration value="E">
+							<xs:annotation>
+								<xs:documentation>Fehler</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="W">
+							<xs:annotation>
+								<xs:documentation>Warnung (noch nicht impl.)</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="I">
+							<xs:annotation>
+								<xs:documentation>Hinweis (noch nicht impl.)</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

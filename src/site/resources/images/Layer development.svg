@@ -1,0 +1,93 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="335px" height="370px" version="1.1"
+     content="&lt;mxfile userAgent=&quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36&quot; version=&quot;7.0.9&quot; editor=&quot;www.draw.io&quot; type=&quot;google&quot;&gt;&lt;diagram id=&quot;a5721cb7-8344-1a47-3a61-5457be88fa9c&quot; name=&quot;Page-1&quot;&gt;3ZZNb5wwEIZ/DVJ7WQEGlr2GbNNLVSkc0quBAawYvDXeZbe/vvZiFohJVSmgpOWA7Hdm/PF4xmChqDo/cHwov7EMqOXa2dlC95breq4v30q4dALaaaHgJOskZxBi8gu0aGv1SDJoJo6CMSrIYSqmrK4hFRMNc87aqVvO6HTWAy7AEOIUU1N9IpkoOzX07UH/CqQo+5kdW1sSnD4XnB1rPZ/lovz6dOYK92Np/6bEGWtHEtpbKOKMia5VnSOgCm2PrYv78or1tm4OtfibALcLOGF61FuPW1IXUoooUWN0qxSXnsx1b6CibQvdtSUREB9wqqytTAWplaKisufIZk4ojRhl/BqLMh/CzJN6Izh7hpEldBMUBNJirl9v6QRcwHkk6f08AKtA8It00VYXabY695w+99rhJHfapRwdYh+Gde4Ut5EHfrKhEc7jRAbOJ0j+ZZjoHWF6BsxFAeZhCmk6BzAJfc+318nGW38E0JkjuF2AoG8Q/FEpewz8RCSlN+FcAo73Ao5nwgln2PgLsAkMNo/QiA8EB/XH9yc4/jpwtgaciFUH1gCX6r4uSP1GPi9rMc/d+VrMgiTwV/oyINu8zGZrcYnbLDSQ3h0bybFppPp4lBT/J7Izuboa2Z1B9h4LnOBGIf30neNUwY1Uaf+kqrpVFqvuZrP5vOw3GUOYz8IO0hCSfCXY2/XSWHaHn9GrbfTDj/a/AQ==&lt;/diagram&gt;&lt;/mxfile&gt;"
+     style="background-color: rgb(255, 255, 255);">
+	<defs/>
+	<g transform="translate(0.5,0.5)">
+		<rect x="0" y="0" width="157.5" height="52.5" fill="#d5e8d4" stroke="#82b366" stroke-width="1.75" pointer-events="none"/>
+		<g transform="translate(19.5,15.5)scale(1.75)">
+			<switch>
+				<foreignObject style="overflow:visible;" pointer-events="all" width="67" height="12" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+					<div xmlns="http://www.w3.org/1999/xhtml"
+					     style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 67px; white-space: nowrap; word-wrap: normal; text-align: center;">
+						<div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;">Swing Client</div>
+					</div>
+				</foreignObject>
+				<text x="34" y="12" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">Swing Client</text>
+			</switch>
+		</g>
+		<rect x="175" y="0" width="157.5" height="52.5" fill="#d5e8d4" stroke="#82b366" stroke-width="1.75" pointer-events="none"/>
+		<g transform="translate(201.5,15.5)scale(1.75)">
+			<switch>
+				<foreignObject style="overflow:visible;" pointer-events="all" width="59" height="12" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+					<div xmlns="http://www.w3.org/1999/xhtml"
+					     style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 59px; white-space: nowrap; word-wrap: normal; text-align: center;">
+						<div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;">Web Client</div>
+					</div>
+				</foreignObject>
+				<text x="30" y="12" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">Web Client</text>
+			</switch>
+		</g>
+		<rect x="0" y="61.25" width="332.5" height="122.5" fill="#f8cecc" stroke="#b85450" stroke-width="1.75" pointer-events="none"/>
+		<rect x="17.5" y="78.75" width="140" height="87.5" fill="#ffffff" stroke="#000000" stroke-width="1.75" pointer-events="none"/>
+		<g transform="translate(30.5,111.5)scale(1.75)">
+			<switch>
+				<foreignObject style="overflow:visible;" pointer-events="all" width="65" height="12" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+					<div xmlns="http://www.w3.org/1999/xhtml"
+					     style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 65px; white-space: nowrap; word-wrap: normal; text-align: center;">
+						<div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;">Xml Service</div>
+					</div>
+				</foreignObject>
+				<text x="33" y="12" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">Xml Service</text>
+			</switch>
+		</g>
+		<rect x="166.25" y="78.75" width="148.75" height="87.5" fill="#ffffff" stroke="#000000" stroke-width="1.75" pointer-events="none"/>
+		<g transform="translate(180.5,111.5)scale(1.75)">
+			<switch>
+				<foreignObject style="overflow:visible;" pointer-events="all" width="68" height="12" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+					<div xmlns="http://www.w3.org/1999/xhtml"
+					     style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 70px; white-space: nowrap; word-wrap: normal; text-align: center;">
+						<div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;">Rest Service</div>
+					</div>
+				</foreignObject>
+				<text x="34" y="12" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">Rest Service</text>
+			</switch>
+		</g>
+		<rect x="0" y="192.5" width="332.5" height="52.5" fill="#fff2cc" stroke="#d6b656" stroke-width="1.75" pointer-events="none"/>
+		<g transform="translate(80.5,207.5)scale(1.75)">
+			<switch>
+				<foreignObject style="overflow:visible;" pointer-events="all" width="97" height="12" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+					<div xmlns="http://www.w3.org/1999/xhtml"
+					     style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 97px; white-space: nowrap; word-wrap: normal; text-align: center;">
+						<div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;">Composer Engine</div>
+					</div>
+				</foreignObject>
+				<text x="49" y="12" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">Composer Engine</text>
+			</switch>
+		</g>
+		<rect x="0" y="253.75" width="332.5" height="52.5" fill="#fff2cc" stroke="#d6b656" stroke-width="1.75" pointer-events="none"/>
+		<g transform="translate(63.5,269.5)scale(1.75)">
+			<switch>
+				<foreignObject style="overflow:visible;" pointer-events="all" width="117" height="12" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+					<div xmlns="http://www.w3.org/1999/xhtml"
+					     style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 119px; white-space: nowrap; word-wrap: normal; text-align: center;">
+						<div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;">Business Rule Engine</div>
+					</div>
+				</foreignObject>
+				<text x="59" y="12" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">Business Rule Engine</text>
+			</switch>
+		</g>
+		<rect x="0" y="315" width="332.5" height="52.5" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.75" pointer-events="none"/>
+		<g transform="translate(14.5,330.5)scale(1.75)">
+			<switch>
+				<foreignObject style="overflow:visible;" pointer-events="all" width="173" height="12" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+					<div xmlns="http://www.w3.org/1999/xhtml"
+					     style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 175px; white-space: nowrap; word-wrap: normal; text-align: center;">
+						<div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;">Database (Oracle, SqlServer, ...)</div>
+					</div>
+				</foreignObject>
+				<text x="87" y="12" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">Database (Oracle, SqlServer, ...)</text>
+			</switch>
+		</g>
+	</g>
+</svg>

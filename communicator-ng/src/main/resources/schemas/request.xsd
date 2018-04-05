@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="Modus">
+		<xs:annotation>
+			<xs:documentation>Bildet das Root-Element des XML- Dokuments</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice>
+				<xs:sequence>
+					<xs:annotation>
+						<xs:documentation>Normale Clientanfrage oder änderung des Sitzungskontexts oder Logout</xs:documentation>
+					</xs:annotation>
+					<xs:element name="Session">
+						<xs:annotation>
+							<xs:documentation>Ist pro XML-Dokument nur einmal vorhanden. Nach erfolgreichem Login identifiziert sich der User nur noch über die Session-Nummer.
+							</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:attribute name="Nr" type="xs:token" use="required">
+								<xs:annotation>
+									<xs:documentation>Wird von der Methode Login gelöst und ermöglicht die Identifikation des User für jede weitere Verarbeitung über diese Nummer
+										durchzuführen.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="Modul" type="xs:Name" use="optional">
+								<xs:annotation>
+									<xs:documentation>Modul für den Sitzungskontext (nur bei Modus="ALTERSESSION")</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="Sprcd" type="xs:int" use="optional">
+								<xs:annotation>
+									<xs:documentation>Sprache für den Sitzungskontext (nur bei Modus="ALTERSESSION")</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="Company" type="xs:Name" use="optional">
+								<xs:annotation>
+									<xs:documentation>Firma für den Sitzungskontext (nur bei Modus="ALTERSESSION")</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="Drucker" type="xs:Name" use="optional">
+								<xs:annotation>
+									<xs:documentation>Drucker für den Sitzungskontext (nur bei Modus="ALTERSESSION")</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:complexType>
+					</xs:element>
+					<xs:choice minOccurs="0">
+						<xs:element name="Tx" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Transaktion: Es können mehrere Transaktionen innerhalb eines XML-Dokument vorkommen.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Bo" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>BusinessObject: Innerhalb einer Transaktion können mehrere BO_s aufgerufen werden.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:choice>
+												<xs:element name="Method" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>Daten verändernde Methode</xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="Parlist" maxOccurs="unbounded">
+																<xs:annotation>
+																	<xs:documentation>Parameterliste: Es können mehrere PARLIST Einträge innerhalb einer Methode vorkommen.
+																	</xs:documentation>
+																</xs:annotation>
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="Par" maxOccurs="unbounded">
+																			<xs:annotation>
+																				<xs:documentation>Parameter</xs:documentation>
+																			</xs:annotation>
+																			<xs:complexType>
+																				<xs:simpleContent>
+																					<xs:extension base="xs:string">
+																						<xs:attribute name="Name" use="required">
+																							<xs:annotation>
+																								<xs:documentation>Identifiziert den Parameter. Abhängig von der Methode wird die der
+																									Parameter und dessen Wert vom Servlet unterschiedlich interpretieren.
+																								</xs:documentation>
+																							</xs:annotation>
+																							<xs:simpleType>
+																								<xs:union>
+																									<xs:simpleType>
+																										<xs:restriction base="xs:NMTOKEN">
+																											<xs:enumeration value="WHAT"/>
+																											<xs:enumeration value="WHERE"/>
+																											<xs:enumeration value="ORDER"/>
+																											<xs:enumeration value="STARTROW"/>
+																											<xs:enumeration value="MAXROWS"/>
+																											<xs:enumeration value="LIMIT"/>
+																										</xs:restriction>
+																									</xs:simpleType>
+																									<xs:simpleType>
+																										<xs:restriction base="xs:NMTOKEN">
+																											<xs:pattern value="[p][A-Z][_1-9A-Z]*"/>
+																										</xs:restriction>
+																									</xs:simpleType>
+																								</xs:union>
+																							</xs:simpleType>
+																						</xs:attribute>
+																					</xs:extension>
+																				</xs:simpleContent>
+																			</xs:complexType>
+																		</xs:element>
+																	</xs:sequence>
+																	<xs:attribute name="Id" type="xs:int" use="required">
+																		<xs:annotation>
+																			<xs:documentation>Identifiziert die Parameterliste innerhalb einer Methode.</xs:documentation>
+																		</xs:annotation>
+																	</xs:attribute>
+																</xs:complexType>
+															</xs:element>
+														</xs:sequence>
+														<xs:attribute name="Name" use="required">
+															<xs:annotation>
+																<xs:documentation>Identifiziert welche Methode innerhalb des BO_s vom Servlet aufgerufen werden soll / wurde.
+																</xs:documentation>
+															</xs:annotation>
+															<xs:simpleType>
+																<xs:restriction base="xs:NMTOKEN">
+																	<xs:enumeration value="INS"/>
+																	<xs:enumeration value="UPD"/>
+																	<xs:enumeration value="DEL"/>
+																	<xs:enumeration value="SEL"/>
+																</xs:restriction>
+															</xs:simpleType>
+														</xs:attribute>
+													</xs:complexType>
+													<xs:unique name="parlist-constraint">
+														<xs:selector xpath="PARLIST"/>
+														<xs:field xpath="ID"/>
+													</xs:unique>
+												</xs:element>
+											</xs:choice>
+											<xs:attribute name="Modul" type="xs:Name" use="required">
+												<xs:annotation>
+													<xs:documentation>Modul in dem das BO definiert ist</xs:documentation>
+												</xs:annotation>
+											</xs:attribute>
+											<xs:attribute name="Name" type="xs:Name" use="required">
+												<xs:annotation>
+													<xs:documentation>Identifiziert welches Business-Object von Servlet auszuführen ist.</xs:documentation>
+												</xs:annotation>
+											</xs:attribute>
+											<xs:attribute name="Version" type="xs:decimal" use="required">
+												<xs:annotation>
+													<xs:documentation>Dient der Entkopplung von Client und Servlet. Wird aktuell nicht verwendet (Wert immer 1).</xs:documentation>
+												</xs:annotation>
+											</xs:attribute>
+											<xs:attribute name="Flag" type="xs:decimal" use="required">
+												<xs:annotation>
+													<xs:documentation>Dient der Steuerung bei einer zukünftigen Versionierung. Wird aktuell nicht verwendet (Wert immer 0)
+													</xs:documentation>
+												</xs:annotation>
+											</xs:attribute>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+								<xs:attribute name="Id" type="xs:int" use="required">
+									<xs:annotation>
+										<xs:documentation>Identifiziert die Transaktion innerhalb eines XML-Dokument.</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+								<xs:attribute name="Mode" use="required">
+									<xs:annotation>
+										<xs:documentation>Synchroner oder asynchroner Ausführungsmodus für DML Transaktionen.</xs:documentation>
+									</xs:annotation>
+									<xs:simpleType>
+										<xs:restriction base="xs:NMTOKEN">
+											<xs:enumeration value="SYNC"/>
+											<xs:enumeration value="ASYNC"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+								<xs:attribute name="Txbez" type="xs:string" use="optional">
+									<xs:annotation>
+										<xs:documentation>Vom client gelieferte Bezeichnung der Transaktion für Logging und Fehlermeldungen</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+								<xs:attribute name="Rollback" type="xs:boolean" use="optional" default="false"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="Permissions">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Permission">
+										<xs:complexType>
+											<xs:simpleContent>
+												<xs:extension base="xs:boolean">
+													<xs:attribute name="Type" type="xs:integer" use="required"/>
+													<xs:attribute name="Key" type="xs:string" use="required"/>
+												</xs:extension>
+											</xs:simpleContent>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+				</xs:sequence>
+				<xs:sequence>
+					<xs:annotation>
+						<xs:documentation>Anmeldung oder Passwortänderung</xs:documentation>
+					</xs:annotation>
+					<xs:element name="Uid" type="xs:Name">
+						<xs:annotation>
+							<xs:documentation>Benutzerkennung</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:choice>
+						<xs:sequence>
+							<xs:annotation>
+								<xs:documentation>Passwortänderung (Modus="PASSWD")</xs:documentation>
+							</xs:annotation>
+							<xs:element name="OldPwd" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>Altes Kennwort MD5 kodiert</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="NewPwd" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>Neues Kennwort MD5 kodiert</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+						<xs:element name="Pw" type="xs:string">
+							<xs:annotation>
+								<xs:documentation>Passwort MD5 kodiert für Anmeldung (Modus="LOGIN")</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+				</xs:sequence>
+			</xs:choice>
+			<xs:attribute name="Op" use="required">
+				<xs:annotation>
+					<xs:documentation>Identifiziert die Art der Verarbeitung. PROD -> Produktion; SIM -> Simulation; LOGIN -> Login (siehe Kapitel Login)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:NMTOKEN">
+						<xs:enumeration value="PROD"/>
+						<xs:enumeration value="SIM"/>
+						<xs:enumeration value="LOGIN"/>
+						<xs:enumeration value="LOGOUT"/>
+						<xs:enumeration value="PASSWD"/>
+						<xs:enumeration value="ALTERSESSION"/>
+						<xs:enumeration value="PERMISSION"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="Procnr" type="xs:integer" use="optional">
+				<xs:annotation>
+					<xs:documentation>Simulationsnummer.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+		<xs:unique name="tx-constraint">
+			<xs:selector xpath="TX"/>
+			<xs:field xpath="ID"/>
+		</xs:unique>
+	</xs:element>
+</xs:schema>

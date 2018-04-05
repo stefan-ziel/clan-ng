@@ -1,0 +1,3446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="2ef077c7-e770-410c-87d4-95142706473d" activeEnvironment="Default" name="XML Protokoll" resourceRoot="" soapui-version="5.3.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config">
+	<con:settings/>
+	<con:interface xsi:type="con:RestService" id="8ad7edc3-76da-4770-ace1-6bcca2ad8987" wadlVersion="http://wadl.dev.java.net/2009/02" name="http://localhost:8080" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<con:settings/>
+		<con:definitionCache type="TEXT" rootPart="file:/home/lar/workspace/clan-ng/src/main/resources/schemas/response.xsd">
+			<con:part>
+				<con:url>file:/home/lar/workspace/clan-ng/src/main/resources/schemas/response.xsd</con:url>
+				<con:content><![CDATA[<xs:schema targetNamespace="http://www.claninfo.ch/2001/proto" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:ldap="http://www.claninfo.ch/2005/ldap" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:proto="http://www.claninfo.ch/2001/proto">
+  <xs:import namespace="http://www.claninfo.ch/2005/ldap" schemaLocation="ldap.xsd"/>
+  <xs:element name="Modus">
+    <xs:annotation>
+      <xs:documentation>Bildet das Root-Element des XML- Dokuments</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice minOccurs="0">
+        <xs:element ref="proto:Err"/>
+        <xs:sequence>
+          <xs:annotation>
+            <xs:documentation>Antwort des Servers auf eine Anmeldung</xs:documentation>
+          </xs:annotation>
+          <xs:element name="Session">
+            <xs:annotation>
+              <xs:documentation>Ist pro XML-Dokument nur einmal vorhanden. Nach erfolgreichem Login identifiziert sich der User nur noch über die Session-Nummer.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:attribute name="Nr" type="xs:token" use="required">
+                <xs:annotation>
+                  <xs:documentation>Wird von der Methode Login gelöst und ermöglicht die Identifikation des User für jede weitere Verarbeitung über diese Nummer durchzuführen.</xs:documentation>
+                </xs:annotation>
+              </xs:attribute>
+            </xs:complexType>
+          </xs:element>
+          <xs:element ref="ldap:Permissions"/>
+        </xs:sequence>
+        <xs:element name="Tx" maxOccurs="unbounded">
+          <xs:annotation>
+            <xs:documentation>Normale Serverantwort</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:choice>
+              <xs:element name="Bo" maxOccurs="unbounded">
+                <xs:annotation>
+                  <xs:documentation>BusinessObject: Innerhalb einer Transaktion können mehrere BO_s aufgerufen werden.</xs:documentation>
+                  <xs:documentation>BusinessObject: Innerhalb einer Transaktion können mehrere BO_s aufgerufen werden.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:choice>
+                    <xs:element name="Method" maxOccurs="unbounded">
+                      <xs:annotation>
+                        <xs:documentation>Methode: Innerhalbe eines BO_s können mehrere Methoden aufgerufen werden.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:choice>
+                          <xs:element name="Record" maxOccurs="unbounded">
+                            <xs:annotation>
+                              <xs:documentation>Es können mehrere PRECORD_s innerhalb einer Methode vorkommen.</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:choice>
+                                <xs:element name="Par" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:annotation>
+                                    <xs:documentation>Parameter</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:simpleContent>
+                                      <xs:extension base="xs:string">
+                                        <xs:attribute name="Name" use="required">
+                                          <xs:annotation>
+                                            <xs:documentation>Identifiziert den Parameter. Abhängig von der Methode wird die der Parameter und dessen Wert vom Servlet unterschiedlich interpretieren.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:union>
+                                              <xs:simpleType>
+                                                <xs:restriction base="xs:NMTOKEN">
+                                                  <xs:pattern value="[p][A-Z][_1-9A-Z]*"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:union>
+                                          </xs:simpleType>
+                                        </xs:attribute>
+                                      </xs:extension>
+                                    </xs:simpleContent>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element ref="proto:Err"/>
+                              </xs:choice>
+                              <xs:attribute name="Id" type="xs:int" use="required">
+                                <xs:annotation>
+                                  <xs:documentation>Identifiziert die Parameterliste innerhalb einer Methode.</xs:documentation>
+                                </xs:annotation>
+                              </xs:attribute>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element ref="proto:Err"/>
+                        </xs:choice>
+                        <xs:attribute name="ReturnRec" type="xs:int" use="optional">
+                          <xs:annotation>
+                            <xs:documentation>Anzahl Records in diesem XM-Dokument.</xs:documentation>
+                          </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="EstRec" type="xs:int" use="optional">
+                          <xs:annotation>
+                            <xs:documentation>Anzahl geschätzter Records.</xs:documentation>
+                          </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="Name" use="required">
+                          <xs:annotation>
+                            <xs:documentation>Identifiziert welche Methode innerhalb des BO_s vom Servlet aufgerufen werden soll / wurde.</xs:documentation>
+                          </xs:annotation>
+                          <xs:simpleType>
+                            <xs:restriction base="xs:NMTOKEN">
+                              <xs:enumeration value="INS"/>
+                              <xs:enumeration value="UPD"/>
+                              <xs:enumeration value="DEL"/>
+                              <xs:enumeration value="SEL"/>
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element ref="proto:Err"/>
+                  </xs:choice>
+                  <xs:attribute name="Modul" type="xs:Name" use="required">
+                    <xs:annotation>
+                      <xs:documentation>Modul in dem das BO definiert ist</xs:documentation>
+                    </xs:annotation>
+                  </xs:attribute>
+                  <xs:attribute name="Name" type="xs:Name" use="required">
+                    <xs:annotation>
+                      <xs:documentation>Identifiziert welches Business-Object von Servlet auszuführen ist.</xs:documentation>
+                    </xs:annotation>
+                  </xs:attribute>
+                  <xs:attribute name="Version" type="xs:decimal" use="required">
+                    <xs:annotation>
+                      <xs:documentation>Dient der Entkopplung von Client und Servlet. Wird aktuell nicht verwendet (Wert immer 1).</xs:documentation>
+                    </xs:annotation>
+                  </xs:attribute>
+                  <xs:attribute name="Flag" type="xs:decimal" use="required">
+                    <xs:annotation>
+                      <xs:documentation>Dient der Steuerung bei einer zukünftigen Versionierung. Wird aktuell nicht verwendet (Wert immer 0)</xs:documentation>
+                    </xs:annotation>
+                  </xs:attribute>
+                </xs:complexType>
+              </xs:element>
+              <xs:element ref="proto:Err"/>
+            </xs:choice>
+            <xs:attribute name="Id" type="xs:int" use="required">
+              <xs:annotation>
+                <xs:documentation>Identifiziert die Transaktion innerhalb eines XML-Dokument.</xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="Mode" use="required">
+              <xs:annotation>
+                <xs:documentation>Synchroner oder asynchroner Ausführungsmodus für DML Transaktionen.</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:NMTOKEN">
+                  <xs:enumeration value="SYNC"/>
+                  <xs:enumeration value="ASYNC"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="Error" type="xs:boolean" use="optional">
+              <xs:annotation>
+                <xs:documentation>Sagt aus ob innerhalb dieser Transaktion ein Fehler aufgetreten ist.</xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Permissions">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Permission">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:boolean">
+                      <xs:attribute name="Type" type="xs:integer" use="required"/>
+                      <xs:attribute name="Key" type="xs:string" use="required"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+      <xs:attribute name="Op" use="required">
+        <xs:annotation>
+          <xs:documentation>Identifiziert die Art der Verarbeitung.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="PROD">
+              <xs:annotation>
+                <xs:documentation>Produktion</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="SIM">
+              <xs:annotation>
+                <xs:documentation>Simulation</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="LOGIN">
+              <xs:annotation>
+                <xs:documentation>LOGIN -> Login (siehe Kapitel Login)</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="PASSWD">
+              <xs:annotation>
+                <xs:documentation>Identifiziert die Art der Verarbeitung. PROD -> Produktion; SIM -> Simulation; LOGIN -> Login (siehe Kapitel Login)</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="ALTERSESSION">
+              <xs:annotation>
+                <xs:documentation>Identifiziert die Art der Verarbeitung. PROD -> Produktion; SIM -> Simulation; LOGIN -> Login (siehe Kapitel Login)</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+    <xs:unique name="tx-constraint">
+      <xs:selector xpath="TX"/>
+      <xs:field xpath="ID"/>
+    </xs:unique>
+  </xs:element>
+  <xs:element name="Err">
+    <xs:annotation>
+      <xs:documentation>Fehler aufgetreten. Die Anzahl der Detail-informationen ist unterschiedlich. Die einzelnen Details werden mittels ID und dessen Wert identifiziert.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Fm" maxOccurs="unbounded">
+          <xs:annotation>
+            <xs:documentation>Fehlermeldung</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Nr" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>Fehlernummer</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="Text" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>Fehlertext</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Typ" use="required">
+              <xs:annotation>
+                <xs:documentation>Typ der Meldung</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:NMTOKEN">
+                  <xs:enumeration value="HF">
+                    <xs:annotation>
+                      <xs:documentation>Hauptfehlermeldung</xs:documentation>
+                    </xs:annotation>
+                  </xs:enumeration>
+                  <xs:enumeration value="FM">
+                    <xs:annotation>
+                      <xs:documentation>Detailinformationen</xs:documentation>
+                    </xs:annotation>
+                  </xs:enumeration>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="Id" type="xs:int" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="Typ" use="required">
+        <xs:annotation>
+          <xs:documentation>Typ (Schwere) des Fehlers</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="E">
+              <xs:annotation>
+                <xs:documentation>Fehler</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="W">
+              <xs:annotation>
+                <xs:documentation>Warnung (noch nicht impl.)</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="I">
+              <xs:annotation>
+                <xs:documentation>Hinweis (noch nicht impl.)</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>]]></con:content>
+				<con:type>http://www.w3.org/2001/XMLSchema</con:type>
+			</con:part>
+			<con:part>
+				<con:url>file:/home/lar/workspace/clan-ng/src/main/resources/schemas/ldap.xsd</con:url>
+				<con:content><![CDATA[<xs:schema targetNamespace="http://www.claninfo.ch/2005/ldap" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ldap="http://www.claninfo.ch/2005/ldap">
+  <xs:annotation>
+    <xs:documentation>Berechtigungen werden generell vom Elternelement auf die Kinder vererbt.</xs:documentation>
+  </xs:annotation>
+  <xs:element name="Permissions">
+    <xs:annotation>
+      <xs:documentation>Berechtigungen und Parameter</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Modul" minOccurs="0" maxOccurs="unbounded">
+          <xs:annotation>
+            <xs:documentation>Systemmodul (pvclan,faclan,ape ...)</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:complexContent>
+              <xs:extension base="ldap:PermissionObject">
+                <xs:sequence>
+                  <xs:element name="Company" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                      <xs:documentation>Companies auf denen der Benutzer arbeiten kann</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                      <xs:complexContent>
+                        <xs:extension base="ldap:PermissionObject">
+                          <xs:sequence>
+                            <xs:element name="Bo" minOccurs="0" maxOccurs="unbounded">
+                              <xs:annotation>
+                                <xs:documentation>Bo´s af denen der Benutzer arbeiten kann</xs:documentation>
+                              </xs:annotation>
+                              <xs:complexType>
+                                <xs:complexContent>
+                                  <xs:extension base="ldap:PermissionObject">
+                                    <xs:sequence>
+                                      <xs:element name="Method" minOccurs="0" maxOccurs="unbounded">
+                                        <xs:annotation>
+                                          <xs:documentation>Methoden, die der Benutzer ausführen kann</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                          <xs:complexContent>
+                                            <xs:extension base="ldap:PermissionObject">
+                                              <xs:sequence>
+                                                <xs:element name="Param" minOccurs="0" maxOccurs="unbounded" type="ldap:PermissionObject">
+                                                  <xs:annotation>
+                                                    <xs:documentation>Parameter, die der Benutzer sehen / bearbeiten darf</xs:documentation>
+                                                  </xs:annotation>
+                                                </xs:element>
+                                                <xs:element name="Where" minOccurs="0" maxOccurs="unbounded">
+                                                  <xs:annotation>
+                                                    <xs:documentation>Datensätze, die der Benutzer sehen / bearbeiten darf</xs:documentation>
+                                                  </xs:annotation>
+                                                  <xs:complexType mixed="true">
+                                                    <xs:complexContent mixed="true">
+                                                      <xs:extension base="ldap:PermissionObject"/>
+                                                    </xs:complexContent>
+                                                  </xs:complexType>
+                                                </xs:element>
+                                              </xs:sequence>
+                                            </xs:extension>
+                                          </xs:complexContent>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:extension>
+                                </xs:complexContent>
+                              </xs:complexType>
+                            </xs:element>
+                            <xs:element ref="ldap:Text" minOccurs="0" maxOccurs="unbounded"/>
+                          </xs:sequence>
+                        </xs:extension>
+                      </xs:complexContent>
+                    </xs:complexType>
+                  </xs:element>
+                  <xs:element ref="ldap:Text" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="Languages" type="xs:NMTOKENS" use="optional">
+                  <xs:annotation>
+                    <xs:documentation>In diesem Modul mögliche Sprachen</xs:documentation>
+                  </xs:annotation>
+                </xs:attribute>
+              </xs:extension>
+            </xs:complexContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Printer" minOccurs="0" maxOccurs="unbounded">
+          <xs:annotation>
+            <xs:documentation>Verfügbare Drucker, Warteschlangen oder andere Geräte für Druckaufträge.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:complexContent>
+              <xs:extension base="ldap:PermissionObject">
+                <xs:sequence>
+                  <xs:element name="Format" minOccurs="0" maxOccurs="unbounded" type="ldap:PermissionObject">
+                    <xs:annotation>
+                      <xs:documentation>Formate, die dieses Gerät verarbeiten kann.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element ref="ldap:Text" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="Display" type="xs:string" use="optional">
+                  <xs:annotation>
+                    <xs:documentation>Dargestellter Name des Druckers</xs:documentation>
+                  </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="Import" type="xs:NMTOKEN" use="optional">
+                  <xs:annotation>
+                    <xs:documentation>Name einer externen Rechtedatei, die an dieser Stelle importiert wird</xs:documentation>
+                  </xs:annotation>
+                </xs:attribute>
+              </xs:extension>
+            </xs:complexContent>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="Access" type="ldap:auth" use="optional">
+        <xs:annotation>
+          <xs:documentation>Zugriffsrecht - erlauben, erben oder verbieten</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="BasedOn" type="xs:NMTOKEN" use="optional">
+        <xs:annotation>
+          <xs:documentation>Name einer externen Rechtedatei, die an dieser zu grunde liegt. Diese wird geladen und dann mit der Aktuellen zusammengefügt wobei die Einstellungen der aktuellen Datei Vorrang haben.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="PermissionObject">
+    <xs:annotation>
+      <xs:documentation>Ein Objekt auf das Berechtigungen vergeben werden</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="Name" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>Name des Objekts</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Access" type="ldap:auth" use="optional">
+      <xs:annotation>
+        <xs:documentation>Zugriffsrecht - erlauben, erben oder verbieten</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:simpleType name="auth">
+    <xs:annotation>
+      <xs:documentation>Zugriffsrecht - erlauben, erben oder verbieten</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="PERMIT">
+        <xs:annotation>
+          <xs:documentation>Zugriff erlauben.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DENY">
+        <xs:annotation>
+          <xs:documentation>Zugriff verbieten.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="INHERIT">
+        <xs:annotation>
+          <xs:documentation>Zugriff vom Elternelement erben.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Text">
+    <xs:annotation>
+      <xs:documentation>Beschriftung (Mehrsprachig)</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:attribute name="Sprcd" type="xs:int" use="required">
+        <xs:annotation>
+          <xs:documentation>Sprachcode der Beschriftung</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>]]></con:content>
+				<con:type>http://www.w3.org/2001/XMLSchema</con:type>
+			</con:part>
+		</con:definitionCache>
+		<con:endpoints>
+			<con:endpoint>http://localhost:8080</con:endpoint>
+		</con:endpoints>
+		<con:resource name="Communicator" path="/clan/Communicator" id="31e4c80d-5b1a-4c03-8adc-f520edc739b5">
+			<con:settings/>
+			<con:parameters/>
+			<con:method name="Communicator" id="6c8219db-509f-4eeb-ade9-9ae05ebdc081" method="POST">
+				<con:settings/>
+				<con:parameters/>
+				<con:representation type="REQUEST">
+					<con:mediaType>application/json</con:mediaType>
+					<con:params/>
+					<con:element>Modus</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType>application/xml;charset=ISO-8859-1</con:mediaType>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>Modus</con:element>
+				</con:representation>
+				<con:representation type="REQUEST">
+					<con:mediaType>application/xml</con:mediaType>
+					<con:params/>
+					<con:element>Modus</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType>text/html;charset=utf-8</con:mediaType>
+					<con:status>404 400 500 405</con:status>
+					<con:params/>
+					<con:element>html</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType>application/xml</con:mediaType>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element xmlns:prot="http://www.claninfo.ch/2001/proto">prot:Modus</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>Modus</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>Modus</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>Modus</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>Modus</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>Modus</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>Modus</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType>application/xml;charset=UTF-8</con:mediaType>
+					<con:status>500</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType>application/xml;charset=UTF-8</con:mediaType>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element xmlns:prot="http://www.claninfo.ch/2001/proto">prot:Modus</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Login" id="88721403-f463-4b1b-8e78-bceed3d4ff8b" mediaType="application/xml" postQueryString="false">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request><![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>
+<Modus Op="LOGIN">
+	<Uid>zis</Uid>
+	<Pw>7B94EE8BB34A64AE6947D5FBABA7A5</Pw>
+</Modus>]]></con:request>
+					<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request>
+				<con:request name="Select" id="4daf9c58-1013-4156-aabe-0d1b52607501" mediaType="application/xml" postQueryString="false">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request><![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>
+<Modus Op="PROD">
+	<Session Nr="64BEA20C047D42BC80B169CC5C0AEBC2"/>
+	<Tx Id="4" Mode="SYNC">
+		<Bo Modul="pvclan" Name="Vers" Version="1" Flag="0">
+			<Method Name="SEL">
+				<Parlist Id="1">
+					<Par Name="WHAT">pMITNUM;pMITBEZ;pSOVNR;pAHVNR;pPENUM;pPENUM2;pNAME;pNAME_CI;pVNAME;pVNAME_CI;pSEXCD;pVSAKTIV;pGEBDAT;pSPRCD;pZIVCD;pQSTPFL;pEINVOD;pGESVORB;pAUSVOD;pEINFID;pAUSGRUND;pAUSFID;pVSPENDENZ;pXS;pLASTBERDAT;pLFNR_MFA;pNEXTBERDAT;pLASTBERCD;pNIEDERLB;pNEXTBERCD;pCOMPANY;pVSNUM_ATMI;pPROCNR;pTODDAT;pVSNUM;pPERSNR;pPERSNR_GDI;pSPERR_ATT;pSPERR_KEY;pSTATUS;pOFFERTE</Par>
+					<Par Name="STARTROW">1</Par>
+					<Par Name="MAXROWS">350</Par>
+					<Par Name="LIMIT">0</Par>
+					<Par Name="WHERE">pNAME='Abt'</Par>
+					<Par Name="ORDER">pNAME, pVNAME, pPENUM, pMITNUM</Par>
+				</Parlist>
+			</Method>
+		</Bo>
+	</Tx>
+</Modus>]]></con:request>
+					<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request>
+				<con:request name="Select Lohn" id="4daf9c58-1013-4156-aabe-0d1b52607501" mediaType="application/xml" postQueryString="false">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request><![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>
+<Modus Op="PROD">
+	<Session Nr="64BEA20C047D42BC80B169CC5C0AEBC2"/>
+	<Tx Id="4" Mode="SYNC">
+		<Bo Modul="pvclan" Name="Vers" Version="1" Flag="0">
+			<Method Name="SEL">
+				<Parlist Id="1">
+					<Par Name="WHAT">pMITNUM;pMITBEZ;pSOVNR;pAHVNR;pPENUM;pPENUM2;pNAME;pNAME_CI;pVNAME;pVNAME_CI;pSEXCD;pVSAKTIV;pGEBDAT;pSPRCD;pZIVCD;pQSTPFL;pEINVOD;pGESVORB;pAUSVOD;pEINFID;pAUSGRUND;pAUSFID;pVSPENDENZ;pXS;pLASTBERDAT;pLFNR_MFA;pNEXTBERDAT;pLASTBERCD;pNIEDERLB;pNEXTBERCD;pCOMPANY;pVSNUM_ATMI;pPROCNR;pTODDAT;pVSNUM;pPERSNR;pPERSNR_GDI;pSPERR_ATT;pSPERR_KEY;pSTATUS;pOFFERTE</Par>
+					<Par Name="STARTROW">1</Par>
+					<Par Name="MAXROWS">350</Par>
+					<Par Name="LIMIT">0</Par>
+					<Par Name="WHERE">pNAME='Abt'</Par>
+					<Par Name="ORDER">pNAME, pVNAME, pPENUM, pMITNUM</Par>
+				</Parlist>
+			</Method>
+		</Bo>
+	</Tx>
+</Modus>]]></con:request>
+					<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request>
+			</con:method>
+		</con:resource>
+		<con:resource name="CommunicatorNG" path="/clan/CommunicatorNG" id="e2a4f80e-47cb-4d96-be6a-7ad0fd61b3fc">
+			<con:settings/>
+			<con:parameters/>
+			<con:method name="CommunicatorNG" id="e6bd6020-993b-4229-a497-f0eb85efea41" method="POST">
+				<con:settings/>
+				<con:parameters/>
+				<con:representation type="REQUEST">
+					<con:mediaType>application/xml</con:mediaType>
+					<con:params/>
+					<con:element xmlns:prot="http://www.claninfo.ch/2001/proto">prot:Modus</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType>application/xml;charset=UTF-8</con:mediaType>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>Modus</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType>application/xml;charset=UTF-8</con:mediaType>
+					<con:status>500</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType>text/html;charset=utf-8</con:mediaType>
+					<con:status>404 500</con:status>
+					<con:params/>
+					<con:element>html</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType>application/xml;charset=ISO-8859-1</con:mediaType>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>Modus</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/><con:element>Modus</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Select" id="0f25f3ac-cd55-4fe1-854c-81f18acb7bcc" mediaType="application/xml" postQueryString="false">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+					</con:settings>
+					<con:encoding>UTF-8</con:encoding>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request><![CDATA[<Modus Op="PROD" xmlns="http://www.claninfo.ch/2001/proto">
+	<Session Nr="0FDE1BEC4EC64A2E871B8899DE71BA76"/>
+	<Tx Id="4" Mode="SYNC">
+		<Bo Modul="pvclan" Name="BovVslohn" Version="1" Flag="0">
+		<Method Name="SEL">
+				<Parlist Id="1">
+					<Par Name="WHAT">pVSNUM;pVSLGDAT;</Par>
+					<Par Name="STARTROW">1</Par>
+					<Par Name="MAXROWS">10</Par>
+					<Par Name="LIMIT">10</Par>
+					<Par Name="WHERE">pVSNUM='154448'</Par>
+				</Parlist>
+			</Method>
+			<Method Name="SEL">
+				<Parlist Id="1">
+					<Par Name="WHAT">pVSNUM;pVSLGDAT;pLOHNART;pVSLOHN;pVSPRAEM;pVSBEGRD;pVSPBGRD;pIVGRAD;pVSLPENDENZ;pUPFCD;pFIL1CD;pFIL2CD</Par>
+					<Par Name="STARTROW">1</Par>
+					<Par Name="MAXROWS">10</Par>
+					<Par Name="LIMIT">10</Par>
+					<Par Name="WHERE">pVSNUM='154448'</Par>
+				</Parlist>
+			</Method>
+		</Bo>
+	</Tx>
+</Modus>]]></con:request>
+					<con:originalUri>http://localhost/clan/CommunicatorNG</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+					<con:parameterOrder/>
+				</con:request>
+			</con:method>
+			
+		</con:resource>
+		<con:inferredSchema><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<inf:schema xmlns:inf="http://www.eviware.com/soapui/InferredSchema"><inf:namespace>http://www.claninfo.ch/2001/proto</inf:namespace><inf:particle xsi:type="inf:ElementParticle" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:name>Modus</inf:name><inf:type xsi:type="inf:TypeReference"><inf:reference xmlns:prot="http://www.claninfo.ch/2001/proto">prot:_Modus</inf:reference></inf:type></inf:particle><inf:prefix key="http://www.w3.org/2001/XMLSchema" value="xs"/><inf:complexType><inf:completed>true</inf:completed><inf:mixed>false</inf:mixed><inf:name>Bo_Method</inf:name><inf:attribute xsi:type="inf:AttributeParticle" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:name>Name</inf:name><inf:type xsi:type="inf:SimpleType"><inf:completed>false</inf:completed><inf:typeName>string</inf:typeName></inf:type></inf:attribute><inf:content xsi:type="inf:SequenceContent" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:completed>true</inf:completed><inf:particle xsi:type="inf:ElementParticle"><inf:name>Record</inf:name><inf:attribute key="maxOccurs" value="12"/><inf:type xsi:type="inf:TypeReference"><inf:reference xmlns:prot="http://www.claninfo.ch/2001/proto">prot:Method_Record</inf:reference></inf:type></inf:particle><inf:comesBefore qname="prot:Record" xmlns:prot="http://www.claninfo.ch/2001/proto"/></inf:content></inf:complexType><inf:complexType><inf:completed>true</inf:completed><inf:mixed>true</inf:mixed><inf:name>Record_Par</inf:name><inf:attribute xsi:type="inf:AttributeParticle" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:name>Name</inf:name><inf:type xsi:type="inf:SimpleType"><inf:completed>false</inf:completed><inf:typeName>string</inf:typeName></inf:type></inf:attribute><inf:content xsi:type="inf:SimpleContent" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:typeName>string</inf:typeName></inf:content></inf:complexType><inf:complexType><inf:completed>true</inf:completed><inf:mixed>false</inf:mixed><inf:name>Modus_Tx</inf:name><inf:attribute xsi:type="inf:AttributeParticle" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:name>Mode</inf:name><inf:type xsi:type="inf:SimpleType"><inf:completed>false</inf:completed><inf:typeName>string</inf:typeName></inf:type></inf:attribute><inf:attribute xsi:type="inf:AttributeParticle" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:name>Id</inf:name><inf:type xsi:type="inf:SimpleType"><inf:completed>false</inf:completed><inf:typeName>positiveInteger</inf:typeName></inf:type></inf:attribute><inf:content xsi:type="inf:SequenceContent" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:completed>true</inf:completed><inf:particle xsi:type="inf:ElementParticle"><inf:name>Bo</inf:name><inf:type xsi:type="inf:TypeReference"><inf:reference xmlns:prot="http://www.claninfo.ch/2001/proto">prot:Tx_Bo</inf:reference></inf:type></inf:particle><inf:comesBefore qname="prot:Bo" xmlns:prot="http://www.claninfo.ch/2001/proto"/></inf:content></inf:complexType><inf:complexType><inf:completed>true</inf:completed><inf:mixed>false</inf:mixed><inf:name>_Modus</inf:name><inf:attribute xsi:type="inf:AttributeParticle" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:name>Op</inf:name><inf:type xsi:type="inf:SimpleType"><inf:completed>false</inf:completed><inf:typeName>string</inf:typeName></inf:type></inf:attribute><inf:content xsi:type="inf:SequenceContent" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:completed>true</inf:completed><inf:particle xsi:type="inf:ElementParticle"><inf:name>Tx</inf:name><inf:type xsi:type="inf:TypeReference"><inf:reference xmlns:prot="http://www.claninfo.ch/2001/proto">prot:Modus_Tx</inf:reference></inf:type></inf:particle><inf:comesBefore qname="prot:Tx" xmlns:prot="http://www.claninfo.ch/2001/proto"/></inf:content></inf:complexType><inf:complexType><inf:completed>true</inf:completed><inf:mixed>false</inf:mixed><inf:name>Method_Record</inf:name><inf:attribute xsi:type="inf:AttributeParticle" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:name>Id</inf:name><inf:type xsi:type="inf:SimpleType"><inf:completed>false</inf:completed><inf:typeName>positiveInteger</inf:typeName></inf:type></inf:attribute><inf:content xsi:type="inf:SequenceContent" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:completed>true</inf:completed><inf:particle xsi:type="inf:ElementParticle"><inf:name>Par</inf:name><inf:attribute key="maxOccurs" value="12"/><inf:type xsi:type="inf:TypeReference"><inf:reference xmlns:prot="http://www.claninfo.ch/2001/proto">prot:Record_Par</inf:reference></inf:type></inf:particle><inf:comesBefore qname="prot:Par" xmlns:prot="http://www.claninfo.ch/2001/proto"/></inf:content></inf:complexType><inf:complexType><inf:completed>true</inf:completed><inf:mixed>false</inf:mixed><inf:name>Tx_Bo</inf:name><inf:attribute xsi:type="inf:AttributeParticle" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:name>Version</inf:name><inf:type xsi:type="inf:SimpleType"><inf:completed>false</inf:completed><inf:typeName>positiveInteger</inf:typeName></inf:type></inf:attribute><inf:attribute xsi:type="inf:AttributeParticle" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:name>Modul</inf:name><inf:type xsi:type="inf:SimpleType"><inf:completed>false</inf:completed><inf:typeName>string</inf:typeName></inf:type></inf:attribute><inf:attribute xsi:type="inf:AttributeParticle" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:name>Flag</inf:name><inf:type xsi:type="inf:SimpleType"><inf:completed>false</inf:completed><inf:typeName>boolean</inf:typeName></inf:type></inf:attribute><inf:attribute xsi:type="inf:AttributeParticle" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:name>Name</inf:name><inf:type xsi:type="inf:SimpleType"><inf:completed>false</inf:completed><inf:typeName>string</inf:typeName></inf:type></inf:attribute><inf:content xsi:type="inf:SequenceContent" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><inf:completed>true</inf:completed><inf:particle xsi:type="inf:ElementParticle"><inf:name>Method</inf:name><inf:type xsi:type="inf:TypeReference"><inf:reference xmlns:prot="http://www.claninfo.ch/2001/proto">prot:Bo_Method</inf:reference></inf:type></inf:particle><inf:comesBefore qname="prot:Method" xmlns:prot="http://www.claninfo.ch/2001/proto"/></inf:content></inf:complexType></inf:schema>]]></con:inferredSchema>
+	</con:interface>
+	<con:testSuite id="1e16ad78-3420-405c-8793-1282e9e65595" name="Tests">
+		<con:settings/>
+		<con:runType>SEQUENTIAL</con:runType>
+		<con:testCase id="7ab647de-c91e-4285-809c-cd616e3f757b" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Complete select Versicherte" searchProperties="true">
+			<con:settings/>
+			<con:testStep type="restrequest" name="Login" id="74d68fa8-6665-4f56-89bc-d46c9a935ca5">
+				<con:settings/>
+				<con:config service="http://localhost:8080" methodName="Communicator" resourcePath="/clan/Communicator" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Login" id="4ae7f017-9b52-4cdc-8256-2fcaba1faa51" mediaType="application/json" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:encoding>UTF-8</con:encoding>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request><![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>
+<Modus Op="LOGIN">
+	<Uid>zis</Uid>
+	<Pw>7B94EE8BB34A64AE6947D5FBABA7A5</Pw>
+</Modus>]]></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="transfer" name="Session ID Transfer" id="7177bc76-9c65-4b43-98a8-9dd1265133e4">
+				<con:settings/>
+				<con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>Session ID</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>Login</con:sourceStep>
+						<con:sourcePath>string(/*[local-name()='Modus']/*[local-name()='Session']/@Nr)</con:sourcePath>
+						<con:targetType>Request</con:targetType>
+						<con:targetStep>Select</con:targetStep>
+						<con:targetPath>/*[local-name()='Modus']/*[local-name()='Session']/@Nr</con:targetPath>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>Logout transfer</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>Login</con:sourceStep>
+						<con:sourcePath>string(/*[local-name()='Modus']/*[local-name()='Session']/@Nr)</con:sourcePath>
+						<con:targetType>Request</con:targetType>
+						<con:targetStep>Logout</con:targetStep>
+						<con:targetPath>/*[local-name()='Modus']/*[local-name()='Session']/@Nr</con:targetPath>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="restrequest" name="Select" id="d9a57549-7adc-4142-9069-5d6483ec9d2f">
+				<con:settings/>
+				<con:config service="http://localhost:8080" resourcePath="/clan/Communicator" methodName="Communicator" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Select" id="4daf9c58-1013-4156-aabe-0d1b52607501" mediaType="application/xml" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request><![CDATA[<Modus Op="PROD" xmlns="http://www.claninfo.ch/2001/proto">
+	<Session Nr="4241E2204D774117800D4E9DC209CEE7"/>
+	<Tx Id="4" Mode="SYNC">
+		<Bo Modul="pvclan" Name="Vers" Version="1" Flag="0">
+			<Method Name="SEL">
+				<Parlist Id="1">
+					<Par Name="WHAT">pMITNUM;pMITBEZ;pSOVNR;pAHVNR;pPENUM;pPENUM2;pNAME;pNAME_CI;pVNAME;pVNAME_CI;pSEXCD;pVSAKTIV;pGEBDAT;pSPRCD;pZIVCD;pQSTPFL;pEINVOD;pGESVORB;pAUSVOD;pEINFID;pAUSGRUND;pAUSFID;pVSPENDENZ;pXS;pLASTBERDAT;pLFNR_MFA;pNEXTBERDAT;pLASTBERCD;pNIEDERLB;pNEXTBERCD;pCOMPANY;pVSNUM_ATMI;pPROCNR;pTODDAT;pVSNUM;pPERSNR;pPERSNR_GDI;pSPERR_ATT;pSPERR_KEY;pSTATUS;pOFFERTE</Par>
+					<Par Name="STARTROW">1</Par>
+					<Par Name="MAXROWS">350</Par>
+					<Par Name="LIMIT">0</Par>
+					<Par Name="WHERE">pNAME='Abt'</Par>
+					<Par Name="ORDER">pNAME, pVNAME, pPENUM, pMITNUM</Par>
+				</Parlist>
+			</Method>
+		</Bo>
+	</Tx>
+</Modus>]]></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+						<con:parameterOrder/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="restrequest" name="Logout" id="d434b4eb-3156-4384-90ab-473b4fe0f538">
+				<con:settings/>
+				<con:config service="http://localhost:8080" methodName="Communicator" resourcePath="/clan/Communicator" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Logout" id="e51c205e-5c71-4ccd-b72b-e4d4a7a8af2b" mediaType="application/xml" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:encoding>UTF-8</con:encoding>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request>&lt;Modus Op="LOGOUT">
+							&lt;Session Nr="4241E2204D774117800D4E9DC209CEE7"/>
+							&lt;/Modus></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:properties/>
+		</con:testCase>
+		<con:testCase id="2ac631cb-b09e-4347-8779-30e39361eb88" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Codes" searchProperties="true">
+			<con:settings/>
+			<con:testStep type="restrequest" name="Login" id="1ba54965-65ea-4e31-ae51-54abf621a619">
+				<con:settings/>
+				<con:config service="http://localhost:8080" methodName="Communicator" resourcePath="/clan/Communicator" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Login" id="4ae7f017-9b52-4cdc-8256-2fcaba1faa51" mediaType="application/json" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:encoding>UTF-8</con:encoding>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request><![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>
+<Modus Op="LOGIN">
+	<Uid>zis</Uid>
+	<Pw>7B94EE8BB34A64AE6947D5FBABA7A5</Pw>
+</Modus>]]></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="transfer" name="Session ID Select" id="20432e09-5d3d-45cf-bd83-c7f188e7f4b1">
+				<con:settings/>
+				<con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>Session ID</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>Login</con:sourceStep>
+						<con:sourcePath>string(/Modus/Session/@Nr)</con:sourcePath>
+						<con:targetType>Request</con:targetType>
+						<con:targetStep>Select</con:targetStep>
+						<con:targetPath>/Modus/Session/@Nr</con:targetPath>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="restrequest" name="Select" id="40ca2733-3061-4560-9d07-c3866a916112">
+				<con:settings/>
+				<con:config service="http://localhost:8080" resourcePath="/clan/Communicator" methodName="Communicator" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Select" id="4daf9c58-1013-4156-aabe-0d1b52607501" mediaType="application/xml" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request><![CDATA[<Modus Op="PROD">
+	<Session Nr="8D987D0C449C487182855EBB8B53FFE9"/>
+	<Tx Id="4" Mode="SYNC">
+		<Bo Modul="pvclan" Name="Vers" Version="1" Flag="0">
+			<Method Name="SEL">
+				<Parlist Id="1">
+					<Par Name="WHAT">*</Par>
+					<Par Name="STARTROW">1</Par>
+					<Par Name="MAXROWS">350</Par>
+					<Par Name="LIMIT">0</Par>
+					<Par Name="WHERE">pNAME='Abt'</Par>
+					<Par Name="ORDER">pNAME, pVNAME, pPENUM, pMITNUM</Par>
+				</Parlist>
+			</Method>
+		</Bo>
+	</Tx>
+</Modus>]]></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="transfer" name="Session ID Logout" id="93928a4f-2837-4c1e-9c90-36965756dea9">
+				<con:settings/>
+				<con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>Session ID</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>Login</con:sourceStep>
+						<con:sourcePath>string(/Modus/Session/@Nr)</con:sourcePath>
+						<con:targetType>Request</con:targetType>
+						<con:targetStep>Logout</con:targetStep>
+						<con:targetPath>/Modus/Session/@Nr</con:targetPath>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="restrequest" name="Logout" id="a0f7cdb3-1862-4196-b7e6-d88ddb5bf3ee">
+				<con:settings/>
+				<con:config service="http://localhost:8080" methodName="Communicator" resourcePath="/clan/Communicator" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Logout" id="e51c205e-5c71-4ccd-b72b-e4d4a7a8af2b" mediaType="application/xml" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:encoding>UTF-8</con:encoding>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request>&lt;Modus Op="LOGOUT">
+							&lt;Session Nr="8D987D0C449C487182855EBB8B53FFE9"/>
+							&lt;/Modus>
+						</con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:properties/>
+		</con:testCase>
+		<con:testCase id="f0ae05ae-3f98-499f-ad7b-2b830a476b32" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Vslohn" searchProperties="true">
+			<con:settings/>
+			<con:testStep type="restrequest" name="Login" id="f346a1bb-4ba8-4b00-9e13-50f6a2b10d6e">
+				<con:settings/>
+				<con:config service="http://localhost:8080" methodName="Communicator" resourcePath="/clan/Communicator" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Login" id="4ae7f017-9b52-4cdc-8256-2fcaba1faa51" mediaType="application/json" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:encoding>UTF-8</con:encoding>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request><![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>
+<Modus Op="LOGIN">
+	<Uid>zis</Uid>
+	<Pw>7B94EE8BB34A64AE6947D5FBABA7A5</Pw>
+</Modus>]]></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="transfer" name="Session ID Select" id="50f5748f-8215-4098-9d37-6d8606ad2362">
+				<con:settings/>
+				<con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>Session ID</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>Login</con:sourceStep>
+						<con:sourcePath>string(/*[local-name()='Modus']/*[local-name()='Session']/@Nr)</con:sourcePath>
+						<con:targetType>Request</con:targetType>
+						<con:targetStep>CommunicatorNG</con:targetStep>
+						<con:targetPath>/*[local-name()='Modus']/*[local-name()='Session']/@Nr</con:targetPath>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="restrequest" name="Select" id="e6dfa825-ce5f-4a72-aad8-72a781e81ab8">
+				<con:settings/>
+				<con:config service="http://localhost:8080" resourcePath="/clan/CommunicatorNG" methodName="CommunicatorNG" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Select" id="4daf9c58-1013-4156-aabe-0d1b52607501" mediaType="application/xml" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Modus Op="PROD" xmlns="http://www.claninfo.ch/2001/proto">
+	<Session Nr="0FDE1BEC4EC64A2E871B8899DE71BA76"/>
+	<Tx Id="4" Mode="SYNC">
+		<Bo Modul="pvclan" Name="BovVslohn" Version="1" Flag="0">
+			<Method Name="SEL">0
+				<Parlist Id="1">
+					<Par Name="WHAT">pVSNUM;pVSLGDAT;pLOHNART;pVSLOHN;pVSPRAEM;pVSBEGRD;pVSPBGRD;pIVGRAD;pVSLPENDENZ;pUPFCD;pFIL1CD;pFIL2CD</Par>
+					<Par Name="STARTROW">1</Par>
+					<Par Name="MAXROWS">10</Par>
+					<Par Name="LIMIT">10</Par>
+					<Par Name="WHERE">pVSNUM='161920'</Par>
+					<Par Name="Test">abçeeuéuüçカタカナ</Par>
+				</Parlist>
+			</Method>
+		</Bo>
+	</Tx>
+</Modus>]]></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+						<con:parameterOrder/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="transfer" name="Session ID Logout" id="81b03eba-b32e-49e1-afad-eb2f9774428e">
+				<con:settings/>
+				<con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>Session ID</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>Login</con:sourceStep>
+						<con:sourcePath>string(/*[local-name()='Modus']/*[local-name()='Session']/@Nr)</con:sourcePath>
+						<con:targetType>Request</con:targetType>
+						<con:targetStep>Logout</con:targetStep>
+						<con:targetPath>/*[local-name()='Modus']/*[local-name()='Session']/@Nr</con:targetPath>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="restrequest" name="Logout" id="2a2331ea-b5d4-4a1b-9f6f-ce51e7de94f5">
+				<con:settings/>
+				<con:config service="http://localhost:8080" methodName="Communicator" resourcePath="/clan/Communicator" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Logout" id="e51c205e-5c71-4ccd-b72b-e4d4a7a8af2b" mediaType="application/xml" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:encoding>UTF-8</con:encoding>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request>&lt;Modus Op="LOGOUT">
+							&lt;Session Nr="0FDE1BEC4EC64A2E871B8899DE71BA76"/>
+							&lt;/Modus>
+						</con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:properties/>
+		</con:testCase>
+		<con:testCase id="56aa982c-ddfd-42c2-8b68-1945257043d8" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Simple Select" searchProperties="true">
+			<con:settings/>
+			
+			<con:testStep type="restrequest" name="Login" id="78a22965-9686-4abc-a175-9d0dffc75600">
+				<con:settings/>
+				<con:config service="http://localhost:8080" methodName="CommunicatorNG" resourcePath="/clan/CommunicatorNG" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Login" id="4ae7f017-9b52-4cdc-8256-2fcaba1faa51" mediaType="application/json" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:encoding>UTF-8</con:encoding>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Modus Op="LOGIN">
+	<Uid>zis</Uid>
+	<Pw>7B94EE8BB34A64AE6947D5FBABA7A5</Pw>
+</Modus>]]></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep><con:testStep type="transfer" name="Session ID Transfer" id="b07c8db7-2c89-44b8-8f90-951b5000efe6">
+				<con:settings/>
+				<con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>Session ID</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>Login</con:sourceStep>
+						<con:sourcePath>string(/*[local-name()='Modus']/*[local-name()='Session']/@Nr)</con:sourcePath>
+						<con:targetType>Request</con:targetType>
+						<con:targetStep>Request</con:targetStep>
+						<con:targetPath>/*[local-name()='Modus']/*[local-name()='Session']/@Nr</con:targetPath>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>Logout transfer</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>Login</con:sourceStep>
+						<con:sourcePath>string(/*[local-name()='Modus']/*[local-name()='Session']/@Nr)</con:sourcePath>
+						<con:targetType>Request</con:targetType>
+						<con:targetStep>Logout</con:targetStep>
+						<con:targetPath>/*[local-name()='Modus']/*[local-name()='Session']/@Nr</con:targetPath>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+				</con:config>
+			</con:testStep><con:testStep type="httprequest" name="Request" id="74587774-696b-44e5-afaa-e4d508cc2f7c"><con:settings/><con:config method="POST" xsi:type="con:HttpRequest" id="10825fb4-802d-47ea-b59a-c3261e729740" name="Request" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/clan/CommunicatorNG</con:endpoint><con:request><![CDATA[<Modus Op="PROD" xmlns="http://www.claninfo.ch/2001/proto">
+	<Session Nr="orWMpZZXGF8wUJKfOmq5dDwFzrIlNIVH"/>
+	<Tx Id="4" Mode="SYNC">
+		<Bo Modul="pvclan" Name="VersLohn" Version="1" Flag="0">
+			<Method Name="SEL">
+				<Parlist Id="1">
+					<Par Name="WHAT">pVSNUM;pVSLGDAT;</Par>
+					<Par Name="STARTROW">15</Par>
+					<Par Name="MAXROWS">40</Par>
+					<Par Name="LIMIT">10</Par>
+					<Par Name="WHERE">pVSNUM='157185'</Par>
+				</Parlist>
+				<Parlist Id="22">
+					<Par Name="WHAT">pVSNUM;pVSLGDAT;pLOHNART;pVSLOHN;pVSPRAEM;pVSBEGRD;pVSPBGRD;pIVGRAD;pVSLPENDENZ;pUPFCD;pFIL1CD;pFIL2CD</Par>
+					<Par Name="STARTROW">1</Par>
+					<Par Name="MAXROWS">40</Par>
+					<Par Name="LIMIT">10</Par>
+					<Par Name="WHERE">pVSNUM='157185'</Par>
+				</Parlist>
+			</Method>
+		</Bo>
+	</Tx>
+</Modus>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep>
+			<con:testStep type="groovy" name="validate response" id="8543caef-75c2-46c7-8383-71b26e33b188">
+				<con:settings/>
+				<con:config><script>import javax.xml.transform.stream.StreamSource;
+
+import javax.xml.XMLConstants;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.File;
+import java.io.StringReader;
+
+
+def previousStep = testRunner.testCase.getTestStepAt(context.currentStepIndex - 1)
+
+String response = previousStep.testRequest.getResponseContentAsString()
+
+SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+Schema schema = factory.newSchema(new File("/home/lar/workspace/clan-ng/communicator-ng/src/main/resources/schemas/response.xsd"));
+Validator validator = schema.newValidator();
+
+validator.validate(new StreamSource(new StringReader(response)));
+
+log.info "Validation succeded!"
+</script></con:config>
+			</con:testStep><con:testStep type="restrequest" name="Logout" id="96cbe95d-c744-40e3-a453-c7d7001aa8da">
+				<con:settings/>
+				<con:config service="http://localhost:8080" methodName="CommunicatorNG" resourcePath="/clan/CommunicatorNG" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Logout" id="e51c205e-5c71-4ccd-b72b-e4d4a7a8af2b" mediaType="application/xml" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:encoding>UTF-8</con:encoding>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request>&lt;Modus Op="LOGOUT">
+	&lt;Session Nr="orWMpZZXGF8wUJKfOmq5dDwFzrIlNIVH"/>
+&lt;/Modus></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep><con:properties/>
+		</con:testCase>
+		<con:testCase id="b41214e1-219f-4265-a6ff-534da84a2a70" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Simple Insert" searchProperties="true">
+			<con:settings/>
+			
+			<con:testStep type="groovy" name="Delete Insert Values" id="f8e2c909-1081-4fc4-a09e-0643c6bc6937">
+				<con:settings/>
+				<con:config><script>import groovy.sql.Sql
+
+com.eviware.soapui.support.GroovyUtils.registerJdbcDriver("oracle.jdbc.driver.OracleDriver")
+def sql = Sql.newInstance("jdbc:oracle:thin:@br-clan27:1521:cite", "peka", "data")
+
+try {
+	sql.connection.autoCommit = false
+
+	sql.execute("DELETE from VERSPEND WHERE VSNUM = 154463")
+	sql.execute("DELETE from BOV_VSLOHN WHERE PPROCNR = 0 AND PVSNUM = 154463")
+
+	sql.commit()
+} finally {
+	if (sql != null) {
+		sql.close()
+	}
+}
+</script></con:config>
+			</con:testStep><con:testStep type="restrequest" name="Login" id="720b1d48-7f0e-4d05-a07b-3f336d7cdc2e">
+				<con:settings/>
+				<con:config service="http://localhost:8080" methodName="CommunicatorNG" resourcePath="/clan/CommunicatorNG" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Login" id="4ae7f017-9b52-4cdc-8256-2fcaba1faa51" mediaType="application/json" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:encoding>UTF-8</con:encoding>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Modus Op="LOGIN">
+	<Uid>zis</Uid>
+	<Pw>7B94EE8BB34A64AE6947D5FBABA7A5</Pw>
+</Modus>]]></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			
+			<con:testStep type="transfer" name="Session ID Transfer" id="6322d4a3-db47-496b-bccd-f06015d513e9">
+				<con:settings/>
+				<con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>Session ID</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>Login</con:sourceStep>
+						<con:sourcePath>string(/*[local-name()='Modus']/*[local-name()='Session']/@Nr)</con:sourcePath>
+						<con:targetType>Request</con:targetType>
+						<con:targetStep>Insert VSLOHN</con:targetStep>
+						<con:targetPath>/*[local-name()='Modus']/*[local-name()='Session']/@Nr</con:targetPath>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>Logout transfer</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>Login</con:sourceStep>
+						<con:sourcePath>string(/*[local-name()='Modus']/*[local-name()='Session']/@Nr)</con:sourcePath>
+						<con:targetType>Request</con:targetType>
+						<con:targetStep>Logout</con:targetStep>
+						<con:targetPath>/*[local-name()='Modus']/*[local-name()='Session']/@Nr</con:targetPath>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+				</con:config>
+			</con:testStep><con:testStep type="httprequest" name="Insert VSLOHN" id="ddc4a9db-433b-48ff-9085-eee5b9c9bdd7"><con:settings/><con:config method="POST" xsi:type="con:HttpRequest" id="da89d96e-c878-4360-8490-a4284ac88b65" name="Insert VSLOHN" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/clan/CommunicatorNG</con:endpoint><con:request><![CDATA[<Modus Op="PROD" xmlns="http://www.claninfo.ch/2001/proto">
+  <Session Nr="qv4IqdzN_mo1b7jVBoJigwymiJmCeu_8"/>
+  <Tx Id="4" Mode="SYNC">
+    <Bo Flag="0" Modul="pvclan" Name="VersLohn" Version="1">
+    
+      <Method Name="INS">
+        <Parlist Id="1">
+          <Par Name="pVSNUM">154463</Par>
+          <Par Name="pVSLGDAT">29.05.2012</Par>
+          <Par Name="pVSLOHN">32485</Par>
+		<Par Name="pVSBEGRD">80</Par>
+		<Par Name="pVSPBGRD">0</Par>
+		<Par Name="pIVGRAD">0</Par>
+		<!--<Par Name="pSEXCD">1</Par>-->
+		<Par Name="pLOHNART">1</Par>
+		<!--<Par Name="pVSLPENDENZ">4</Par>-->
+        </Parlist>
+      </Method>
+    </Bo>
+  </Tx>
+</Modus>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep>
+			<con:testStep type="groovy" name="Validate response" id="50c17173-3afa-4380-9f00-bf4b94a232de">
+				<con:settings/>
+				<con:config><script>import javax.xml.transform.stream.StreamSource;
+
+import javax.xml.XMLConstants;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.File;
+import java.io.StringReader;
+
+
+def previousStep = testRunner.testCase.getTestStepAt(context.currentStepIndex - 1)
+
+String response = previousStep.testRequest.getResponseContentAsString()
+
+SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+Schema schema = factory.newSchema(new File("/home/lar/workspace/clan-ng/communicator-ng/src/main/resources/schemas/response.xsd"));
+Validator validator = schema.newValidator();
+
+validator.validate(new StreamSource(new StringReader(response)));
+					</script></con:config>
+			</con:testStep><con:testStep type="restrequest" name="Logout" id="1f9d490f-ad38-4fb5-adcf-46a63a89ec14">
+				<con:settings/>
+				<con:config service="http://localhost:8080" methodName="CommunicatorNG" resourcePath="/clan/CommunicatorNG" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Logout" id="e51c205e-5c71-4ccd-b72b-e4d4a7a8af2b" mediaType="application/xml" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:encoding>UTF-8</con:encoding>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request>&lt;Modus Op="LOGOUT">
+	&lt;Session Nr="qv4IqdzN_mo1b7jVBoJigwymiJmCeu_8"/>
+&lt;/Modus></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="groovy" name="Check Inserted Values" id="c7cef120-4946-47c3-93ca-092c9ff38440">
+				<con:settings/>
+				<con:config><script>import groovy.sql.Sql
+
+com.eviware.soapui.support.GroovyUtils.registerJdbcDriver("oracle.jdbc.driver.OracleDriver")
+def sql = Sql.newInstance("jdbc:oracle:thin:@br-clan27:1521:cite", "peka", "data")
+
+try {
+	def vsnum = 154463
+	def errors = false;
+	def vslohn = sql.firstRow("SELECT * FROM VSLOHN where vsnum = ?", [vsnum])
+	if(vslohn == null) {
+		log.error("Vslohn not found")
+		errors = true
+	} else {
+		log.info(vslohn)
+	}
+	
+	def verspend = sql.firstRow("SELECT * FROM VERSPEND WHERE vsnum = ?", [vsnum])
+	if(verspend == null) {
+		log.error("Verspend not found")
+		errors = true
+	}
+
+	if(errors) {
+		assert false
+	}
+
+} finally {
+	sql.close();
+}
+</script></con:config>
+			</con:testStep>
+			<con:testStep type="groovy" name="Delete Inserted Values" id="e27c6bc0-0e02-4e06-a1da-e52b6d3076dd">
+				<con:settings/>
+				<con:config><script>import groovy.sql.Sql
+
+com.eviware.soapui.support.GroovyUtils.registerJdbcDriver("oracle.jdbc.driver.OracleDriver")
+def sql = Sql.newInstance("jdbc:oracle:thin:@br-clan27:1521:cite", "peka", "data")
+
+try {
+	sql.connection.autoCommit = false
+
+	sql.execute("DELETE from VERSPEND WHERE VSNUM = 154463")
+	sql.execute("DELETE from BOV_VSLOHN WHERE PPROCNR = 0 AND PVSNUM = 154463")
+
+	sql.commit()
+} finally {
+	if (sql != null) {
+		sql.close()
+	}
+}
+</script></con:config>
+			</con:testStep><con:setupScript>import java.time.*
+import java.time.format.DateTimeFormatter
+import java.util.Random
+
+Random r = new Random();
+LocalDate date = LocalDate.ofYearDay(r.nextInt(20) + 2004, r.nextInt(364) + 1);
+def dateString = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(date);
+testRunner.testCase.setPropertyValue("date", dateString)
+			</con:setupScript>
+			<con:tearDownScript>import groovy.sql.Sql
+
+				com.eviware.soapui.support.GroovyUtils.registerJdbcDriver("oracle.jdbc.driver.OracleDriver")
+				def sql = Sql.newInstance("jdbc:oracle:thin:@br-clan27:1521:cite", "peka", "data")
+
+				sql.connection.autoCommit = false
+
+				try {
+				def vsnum = 154463
+				sql.execute("DELETE FROM VSLOHN WHERE vsnum = ?", [vsnum])
+				sql.execute("DELETE FROM VERSPEND WHERE vsnum = ?", [vsnum])
+				log.info("Deleted all $vsnum entries")
+				sql.commit()
+				} finally {
+				sql.close();
+				}
+			</con:tearDownScript>
+			<con:properties>
+				<con:property>
+					<con:name>date</con:name>
+					<con:value>06.02.2018</con:value>
+				</con:property>
+			</con:properties>
+		</con:testCase>
+		
+		<con:testCase id="b5c5b6ed-12ba-449a-940d-cd1cfaf44f5f" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Simple Delete" searchProperties="true">
+			<con:settings/>
+			<con:testStep type="groovy" name="Insert dummy values" id="17258783-c0c2-4c6c-8aa1-b540afa3a59a">
+				<con:settings/>
+				<con:config><script>import groovy.sql.Sql
+
+com.eviware.soapui.support.GroovyUtils.registerJdbcDriver("oracle.jdbc.driver.OracleDriver")
+def sql = Sql.newInstance("jdbc:oracle:thin:@br-clan27:1521:cite", "peka", "data")
+
+try {
+	sql.connection.autoCommit = false
+
+	sql.execute("DELETE from VERSPEND WHERE VSNUM = 154463")
+	sql.execute("DELETE from BOV_VSLOHN WHERE PPROCNR = 0 AND PVSNUM = 154463")
+	sql.execute("""INSERT INTO BOV_VSLOHN (PPROCNR, pVSNUM, PVSLGDAT, PVSLOHN, PVSBEGRD, PVSPBGRD, PIVGRAD, PLOHNART, PVSLPENDENZ) VALUES
+	(0, 154463, to_date('31.10.2012', 'dd.mm.yyyy'), 32485, 80, 0, 0, 1, 4)""")
+
+	sql.commit()
+} finally {
+	if (sql != null) {
+		sql.close()
+	}
+}
+</script></con:config>
+			</con:testStep><con:testStep type="restrequest" name="Login" id="6c959c28-10e3-4817-85e9-aacc2e5841ba">
+				<con:settings/>
+				<con:config service="http://localhost:8080" methodName="CommunicatorNG" resourcePath="/clan/CommunicatorNG" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Login" id="4ae7f017-9b52-4cdc-8256-2fcaba1faa51" mediaType="application/json" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:encoding>UTF-8</con:encoding>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Modus Op="LOGIN">
+	<Uid>zis</Uid>
+	<Pw>7B94EE8BB34A64AE6947D5FBABA7A5</Pw>
+</Modus>]]></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="transfer" name="Session ID Transfer" id="b0f3edbc-e56d-4bab-8185-d4cfcd07f80c">
+				<con:settings/>
+				<con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>Session ID</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>Login</con:sourceStep>
+						<con:sourcePath>string(/*[local-name()='Modus']/*[local-name()='Session']/@Nr)</con:sourcePath>
+						<con:targetType>Request</con:targetType>
+						<con:targetStep>Delete VSLOHN</con:targetStep>
+						<con:targetPath>/*[local-name()='Modus']/*[local-name()='Session']/@Nr</con:targetPath>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>Logout transfer</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>Login</con:sourceStep>
+						<con:sourcePath>string(/*[local-name()='Modus']/*[local-name()='Session']/@Nr)</con:sourcePath>
+						<con:targetType>Request</con:targetType>
+						<con:targetStep>Logout</con:targetStep>
+						<con:targetPath>/*[local-name()='Modus']/*[local-name()='Session']/@Nr</con:targetPath>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+				</con:config>
+			</con:testStep><con:testStep type="restrequest" name="Delete VSLOHN" id="2b6e01a5-9f8e-42bc-b767-ebeb31bac8a1">
+				<con:settings/>
+				<con:config service="http://localhost:8080" resourcePath="/clan/CommunicatorNG" methodName="CommunicatorNG" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Delete VSLOHN" id="0524144b-10ef-410c-9253-6ce44b8535f4" mediaType="application/xml" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request><![CDATA[<Modus Op="PROD" xmlns="http://www.claninfo.ch/2001/proto">
+  <Session Nr="tQDZlH1c7uY20FAxSQVE4C1CfIrrwLmv"/>
+  <Tx Id="4" Mode="SYNC">
+    <Bo Flag="0" Modul="pvclan" Name="VersLohn" Version="1">
+      <Method Name="DEL">
+        <Parlist Id="1">
+          <Par Name="pVSNUM">154463</Par>
+          <Par Name="pVSLGDAT">31.10.2012</Par>
+        </Parlist>
+      </Method>
+    </Bo>
+  </Tx>
+</Modus>]]></con:request>
+						<con:originalUri>http://localhost/clan/CommunicatorNG</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+						<con:parameterOrder/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="groovy" name="Validate response" id="aab65952-2646-46bb-bc59-8631cd53c2a4">
+				<con:settings/>
+				<con:config><script>import javax.xml.transform.stream.StreamSource;
+
+import javax.xml.XMLConstants;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.File;
+import java.io.StringReader;
+
+
+def previousStep = testRunner.testCase.getTestStepAt(context.currentStepIndex - 1)
+
+String response = previousStep.testRequest.getResponseContentAsString()
+
+SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+Schema schema = factory.newSchema(new File("/home/lar/workspace/clan-ng/communicator-ng/src/main/resources/schemas/response.xsd"));
+Validator validator = schema.newValidator();
+
+validator.validate(new StreamSource(new StringReader(response)));
+</script></con:config>
+			</con:testStep>
+			<con:testStep type="groovy" name="Check Deleted Values" id="56e6910f-948c-4d2b-afd5-6d2a9c6f8fb8">
+				<con:settings/>
+				<con:config><script>import groovy.sql.Sql
+
+com.eviware.soapui.support.GroovyUtils.registerJdbcDriver("oracle.jdbc.driver.OracleDriver")
+def sql = Sql.newInstance("jdbc:oracle:thin:@br-clan27:1521:cite", "peka", "data")
+
+try {
+	def vsnum = 154463
+	def errors = false;
+	def vslohn = sql.firstRow("SELECT * FROM VSLOHN where vsnum = ?", [vsnum])
+	
+	if(vslohn != null) {
+		log.error("Found Vslohn")
+		errors = true
+	} else {
+		log.info("Vslohn deleted")
+	}
+	
+	def verspend = sql.firstRow("SELECT * FROM VERSPEND WHERE vsnum = ?", [vsnum])
+	if(verspend != null) {
+		log.error("Found Verspend")
+		errors = true
+	} else {
+		log.info("Verspend deleted")
+	}
+	
+	if(errors) {
+		assert false
+	}
+
+} finally {
+	sql.close()
+}
+					</script></con:config>
+			</con:testStep><con:testStep type="restrequest" name="Logout" id="61a1ea1f-42dc-4fde-b32b-07be8443f449">
+				<con:settings/>
+				<con:config service="http://localhost:8080" methodName="CommunicatorNG" resourcePath="/clan/CommunicatorNG" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Logout" id="e51c205e-5c71-4ccd-b72b-e4d4a7a8af2b" mediaType="application/xml" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:encoding>UTF-8</con:encoding>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request>&lt;Modus Op="LOGOUT">
+	&lt;Session Nr="tQDZlH1c7uY20FAxSQVE4C1CfIrrwLmv"/>
+&lt;/Modus></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:setupScript/>
+			<con:tearDownScript/>
+			<con:properties>
+				<con:property>
+					<con:name>date</con:name>
+					<con:value>31.10.2012</con:value>
+				</con:property>
+			</con:properties>
+		</con:testCase>
+		<con:testCase id="b7df3c88-6c81-4007-9b41-c3dbdba5d9e1" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Simple Update" searchProperties="true">
+			<con:settings/>
+			<con:testStep type="groovy" name="Insert dummy values" id="ac44ce9e-95a5-4bd8-8e7b-7e6df38d695f">
+				<con:settings/>
+				<con:config><script>import groovy.sql.Sql
+
+com.eviware.soapui.support.GroovyUtils.registerJdbcDriver("oracle.jdbc.driver.OracleDriver")
+def sql = Sql.newInstance("jdbc:oracle:thin:@br-clan27:1521:cite", "peka", "data")
+
+try {
+	sql.connection.autoCommit = false
+	
+	sql.execute("DELETE from VERSPEND WHERE VSNUM = 154463")
+	sql.execute("DELETE from BOV_VSLOHN WHERE PPROCNR = 0 AND PVSNUM = 154463")
+	sql.execute("""INSERT INTO BOV_VSLOHN (PPROCNR, pVSNUM, PVSLGDAT, PVSLOHN, PVSBEGRD, PVSPBGRD, PIVGRAD, PLOHNART, PVSLPENDENZ) VALUES
+	(0, 154463, to_date('31.10.2012', 'dd.mm.yyyy'), 32485, 80, 0, 0, 1, 4)""")
+	
+	sql.commit()
+} finally {
+	if (sql != null) {
+		sql.close()
+	}
+}
+					</script></con:config>
+			</con:testStep>
+			<con:testStep type="restrequest" name="Login" id="a9519220-add9-4ae9-871a-0fa9c53b701c">
+				<con:settings/>
+				<con:config service="http://localhost:8080" methodName="CommunicatorNG" resourcePath="/clan/CommunicatorNG" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Login" id="4ae7f017-9b52-4cdc-8256-2fcaba1faa51" mediaType="application/json" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:encoding>UTF-8</con:encoding>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Modus Op="LOGIN">
+	<Uid>zis</Uid>
+	<Pw>7B94EE8BB34A64AE6947D5FBABA7A5</Pw>
+</Modus>]]></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep><con:testStep type="transfer" name="Session ID Transfer" id="98f6bc8b-e435-430b-b62f-fa6d79530681">
+				<con:settings/>
+				<con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>Session ID</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>Login</con:sourceStep>
+						<con:sourcePath>string(/*[local-name()='Modus']/*[local-name()='Session']/@Nr)</con:sourcePath>
+						<con:targetType>Request</con:targetType>
+						<con:targetStep>Update VSLOHN</con:targetStep>
+						<con:targetPath>/*[local-name()='Modus']/*[local-name()='Session']/@Nr</con:targetPath>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>Logout transfer</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>Login</con:sourceStep>
+						<con:sourcePath>string(/*[local-name()='Modus']/*[local-name()='Session']/@Nr)</con:sourcePath>
+						<con:targetType>Request</con:targetType>
+						<con:targetStep>Logout</con:targetStep>
+						<con:targetPath>/*[local-name()='Modus']/*[local-name()='Session']/@Nr</con:targetPath>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+				</con:config>
+			</con:testStep><con:testStep type="restrequest" name="Update VSLOHN" id="a1056469-cf51-48f6-b0b3-6421cdcd96b6">
+				<con:settings/>
+				<con:config service="http://localhost:8080" resourcePath="/clan/CommunicatorNG" methodName="CommunicatorNG" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Update VSLOHN" id="0524144b-10ef-410c-9253-6ce44b8535f4" mediaType="application/xml" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request><![CDATA[<Modus Op="PROD" xmlns="http://www.claninfo.ch/2001/proto">
+  <Session Nr="3E10EK3bR_64ez1lJ1t47RDnaPTPkyEr"/>
+  <Tx Id="4" Mode="SYNC">
+    <Bo Flag="0" Modul="pvclan" Name="VersLohn" Version="1">
+      <Method Name="UPD">
+        <Parlist Id="1">
+          <Par Name="pVSNUM">154463</Par>
+          <Par Name="pVSLGDAT">31.10.2012</Par>
+          <Par Name="pVSLOHN">666</Par>
+        </Parlist>
+      </Method>
+    </Bo>
+  </Tx>
+</Modus>]]></con:request>
+						<con:originalUri>http://localhost/clan/CommunicatorNG</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+						<con:parameterOrder/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="groovy" name="Validate response" id="d9da8224-5073-4367-9dfd-39442a364af0">
+				<con:settings/>
+				<con:config><script>import javax.xml.transform.stream.StreamSource;
+
+import javax.xml.XMLConstants;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.File;
+import java.io.StringReader;
+
+
+def previousStep = testRunner.testCase.getTestStepAt(context.currentStepIndex - 1)
+
+String response = previousStep.testRequest.getResponseContentAsString()
+
+SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+Schema schema = factory.newSchema(new File("/home/lar/workspace/clan-ng/communicator-ng/src/main/resources/schemas/response.xsd"));
+Validator validator = schema.newValidator();
+
+validator.validate(new StreamSource(new StringReader(response)));
+</script></con:config>
+			</con:testStep>
+			<con:testStep type="groovy" name="Check Updated Values" id="a42eb1c9-a1e8-49ce-badb-61585f345b48">
+				<con:settings/>
+				<con:config><script>import groovy.sql.Sql
+
+com.eviware.soapui.support.GroovyUtils.registerJdbcDriver("oracle.jdbc.driver.OracleDriver")
+def sql = Sql.newInstance("jdbc:oracle:thin:@br-clan27:1521:cite", "peka", "data")
+
+try {
+	def vsnum = 154463
+	def errors = false;
+	def vslohn = sql.firstRow("SELECT * FROM VSLOHN where vsnum = ?", [vsnum])
+	
+	if(vslohn == null) {
+		log.error("Vslohn not found")
+		errors = true
+	} else {
+		log.info("Vslohn found")
+		log.info(vslohn)
+		
+		if(vslohn.VSLOHN != 666) {
+			log.error("Update not successful")
+			errors = true
+		}
+	}
+	
+	if(errors) {
+		assert false
+	}
+} finally {
+	sql.close()
+}
+</script></con:config>
+			</con:testStep>
+			<con:testStep type="restrequest" name="Logout" id="a2098800-8fe3-4151-a918-37ac0e0c02ca">
+				<con:settings/>
+				<con:config service="http://localhost:8080" methodName="CommunicatorNG" resourcePath="/clan/CommunicatorNG" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="Logout" id="e51c205e-5c71-4ccd-b72b-e4d4a7a8af2b" mediaType="application/xml" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:encoding>UTF-8</con:encoding>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request>&lt;Modus Op="LOGOUT">
+	&lt;Session Nr="3E10EK3bR_64ez1lJ1t47RDnaPTPkyEr"/>
+&lt;/Modus></con:request>
+						<con:originalUri>http://localhost/clan/Communicator</con:originalUri>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep><con:testStep type="groovy" name="Delete dummy values" id="12a77276-aea3-44de-879f-4323daa16cf7">
+				<con:settings/>
+				<con:config>
+					<script>import groovy.sql.Sql
+
+						com.eviware.soapui.support.GroovyUtils.registerJdbcDriver("oracle.jdbc.driver.OracleDriver")
+						def sql = Sql.newInstance("jdbc:oracle:thin:@br-clan27:1521:cite", "peka", "data")
+
+						try {
+						sql.connection.autoCommit = false
+
+						sql.execute("DELETE from VERSPEND WHERE VSNUM = 154463")
+						sql.execute("DELETE from BOV_VSLOHN WHERE PPROCNR = 0 AND PVSNUM = 154463")
+
+						sql.commit()
+						} finally {
+						if (sql != null) {
+						sql.close()
+						}
+						}
+					</script>
+				</con:config>
+			</con:testStep>
+			<con:setupScript/>
+			<con:tearDownScript/>
+			<con:properties>
+				<con:property>
+					<con:name>date</con:name>
+					<con:value>31.10.2012</con:value>
+				</con:property>
+			</con:properties>
+		</con:testCase>
+		<con:properties/>
+	</con:testSuite>
+	<con:properties/>
+	<con:wssContainer/>
+	<con:oAuth2ProfileContainer/>
+	<con:oAuth1ProfileContainer/>
+	<con:sensitiveInformation/>
+</con:soapui-project>

@@ -1,0 +1,12 @@
+package drls
+
+import ch.claninfo.common.connect.Method
+import ch.claninfo.clanng.versicherte.entities.Verspend
+
+rule "Check pendencies"
+	dialect "java"
+	salience 1
+	when
+		$verspend : Verspend(method == Method.INS || method == Method.DEL)
+	then
+end

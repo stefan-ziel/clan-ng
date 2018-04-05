@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN"
+		"http://docbook.org/xml/simple/1.1/sdocbook.dtd">
+
+<article>
+	<title>Job queue</title>
+	<para>
+		Das Modul behandelt Quartz Services und enthält die Entities dafür.
+	</para>
+</article>

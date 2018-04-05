@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN"
+		"http://docbook.org/xml/simple/1.1/sdocbook.dtd">
+
+<article>
+	<title>Sql Parser</title>
+	<para>
+		Der Parser ist verantworlich für das Parsing von SQL Code. Das ist in Clan ng nützlich beim
+		Konvertierung von SQL Wheres in die Formel Sprache oder andere zu JPQL (JPA Query Language),
+		und damit kann es durch JPA bearbeitet werden.
+	</para>
+</article>

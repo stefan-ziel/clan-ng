@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" shutdownHook="disable">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%highlight{[%5level/%date{yyyy-MM-dd HH:mm:ss.SSS}/%thread/%30.30logger]}: %msg%n"/>
+		</Console>
+		<File name="Tomcat-log" fileName="${sys:catalina.home}/logs/clan-ng.log" immediateFlush="true" append="true">
+			<PatternLayout pattern="[%5level/%date{yyyy-MM-dd HH:mm:ss.SSS}/%thread/%30.30logger]: %msg%n"/>
+		</File>
+	</Appenders>
+	<Loggers>
+		<Root level="INFO">
+			<AppenderRef ref="Console"/>
+			<AppenderRef ref="Tomcat-log"/>
+		</Root>
+
+		<!--Show hibernate queries - DEBUG-->
+		<Logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+			<AppenderRef ref="Console"/>
+			<AppenderRef ref="Tomcat-log"/>
+		</Logger>
+		<!--Shows hibernate type binding - TRACE-->
+		<Logger name="org.hibernate.type.descriptor" level="TRACE" additivity="false">
+			<AppenderRef ref="Console"/>
+			<AppenderRef ref="Tomcat-log"/>
+		</Logger>
+
+		<!--<Logger name="org.hibernate" level="DEBUG" additivity="false">-->
+			<!--<AppenderRef ref="Console"/>-->
+			<!--<AppenderRef ref="Tomcat-log"/>-->
+		<!--</Logger>-->
+
+
+		<Logger name="oracle.jdbc" level="WARN" additivity="false">
+			<AppenderRef ref="Console"/>
+			<AppenderRef ref="Tomcat-log"/>
+		</Logger>
+
+		<Logger name="ch.claninfo" level="ALL" additivity="false">
+			<AppenderRef ref="Console"/>
+			<AppenderRef ref="Tomcat-log"/>
+		</Logger>
+	</Loggers>
+</Configuration>

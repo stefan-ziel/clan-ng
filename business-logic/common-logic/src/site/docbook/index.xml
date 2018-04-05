@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN"
+		"http://docbook.org/xml/simple/1.1/sdocbook.dtd">
+
+<article>
+	<title>Common Logic</title>
+	<para>
+		Ist für das Base Logic und allen Common Code verantwortlich.
+	</para>
+	<para>
+		Aktuell sind die Verantworlichkeiten von Common Logic:
+	</para>
+	<itemizedlist>
+		<listitem>
+			<para>
+				Common Business Regeln zu den CRUD Befehlen.
+			</para>
+		</listitem>
+		<listitem>
+			<para>
+				Alle die Code zum Konvertierung (JPA/Generell Konvertierung) und Datenbank
+				Zugriff wird hier implementiert.
+				Auch 'Utils' Klassen zum Helfen von gemeinsame Funktionen in der Projekt in
+				Drools, Jpa oder noch andere.
+			</para>
+		</listitem>
+		<listitem>
+			<para>
+				Dieser Modul gehören alle custom Spalten Typen und alle Basis Typen, bzw.
+				die basis Verhaltung aller Entities und BOs.
+			</para>
+		</listitem>
+		<listitem>
+			<para>
+				Gemeinsame Constraints werden hier definiert, z.B. Codes Constraints.
+			</para>
+		</listitem>
+		<listitem>
+			<para>
+				Session Behandlung wird hier auch definiert, die Services und Dtos dafür vorhanden.
+			</para>
+		</listitem>
+	</itemizedlist>
+</article>

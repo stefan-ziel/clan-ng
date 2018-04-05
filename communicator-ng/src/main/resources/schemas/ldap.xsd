@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.claninfo.ch/2005/ldap" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ldap="http://www.claninfo.ch/2005/ldap"
+           elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>Berechtigungen werden generell vom Elternelement auf die Kinder vererbt.</xs:documentation>
+	</xs:annotation>
+	<xs:element name="Permissions">
+		<xs:annotation>
+			<xs:documentation>Berechtigungen und Parameter</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Modul" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>Systemmodul (pvclan,faclan,ape ...)</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="ldap:PermissionObject">
+								<xs:sequence>
+									<xs:element name="Company" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>Companies auf denen der Benutzer arbeiten kann</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:complexContent>
+												<xs:extension base="ldap:PermissionObject">
+													<xs:sequence>
+														<xs:element name="Bo" minOccurs="0" maxOccurs="unbounded">
+															<xs:annotation>
+																<xs:documentation>Bo´s af denen der Benutzer arbeiten kann</xs:documentation>
+															</xs:annotation>
+															<xs:complexType>
+																<xs:complexContent>
+																	<xs:extension base="ldap:PermissionObject">
+																		<xs:sequence>
+																			<xs:element name="Method" minOccurs="0" maxOccurs="unbounded">
+																				<xs:annotation>
+																					<xs:documentation>Methoden, die der Benutzer ausführen kann</xs:documentation>
+																				</xs:annotation>
+																				<xs:complexType>
+																					<xs:complexContent>
+																						<xs:extension base="ldap:PermissionObject">
+																							<xs:sequence>
+																								<xs:element name="Param" minOccurs="0" maxOccurs="unbounded"
+																								            type="ldap:PermissionObject">
+																									<xs:annotation>
+																										<xs:documentation>Parameter, die der Benutzer sehen / bearbeiten darf
+																										</xs:documentation>
+																									</xs:annotation>
+																								</xs:element>
+																								<xs:element name="Where" minOccurs="0" maxOccurs="unbounded">
+																									<xs:annotation>
+																										<xs:documentation>Datensätze, die der Benutzer sehen / bearbeiten darf
+																										</xs:documentation>
+																									</xs:annotation>
+																									<xs:complexType mixed="true">
+																										<xs:complexContent mixed="true">
+																											<xs:extension base="ldap:PermissionObject"/>
+																										</xs:complexContent>
+																									</xs:complexType>
+																								</xs:element>
+																							</xs:sequence>
+																						</xs:extension>
+																					</xs:complexContent>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																	</xs:extension>
+																</xs:complexContent>
+															</xs:complexType>
+														</xs:element>
+														<xs:element ref="ldap:Text" minOccurs="0" maxOccurs="unbounded"/>
+													</xs:sequence>
+												</xs:extension>
+											</xs:complexContent>
+										</xs:complexType>
+									</xs:element>
+									<xs:element ref="ldap:Text" minOccurs="0" maxOccurs="unbounded"/>
+								</xs:sequence>
+								<xs:attribute name="Languages" type="xs:NMTOKENS" use="optional">
+									<xs:annotation>
+										<xs:documentation>In diesem Modul mögliche Sprachen</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Printer" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>Verfügbare Drucker, Warteschlangen oder andere Geräte für Druckaufträge.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="ldap:PermissionObject">
+								<xs:sequence>
+									<xs:element name="Format" minOccurs="0" maxOccurs="unbounded" type="ldap:PermissionObject">
+										<xs:annotation>
+											<xs:documentation>Formate, die dieses Gerät verarbeiten kann.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element ref="ldap:Text" minOccurs="0" maxOccurs="unbounded"/>
+								</xs:sequence>
+								<xs:attribute name="Display" type="xs:string" use="optional">
+									<xs:annotation>
+										<xs:documentation>Dargestellter Name des Druckers</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+								<xs:attribute name="Import" type="xs:NMTOKEN" use="optional">
+									<xs:annotation>
+										<xs:documentation>Name einer externen Rechtedatei, die an dieser Stelle importiert wird</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="Access" type="ldap:auth" use="optional">
+				<xs:annotation>
+					<xs:documentation>Zugriffsrecht - erlauben, erben oder verbieten</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="BasedOn" type="xs:NMTOKEN" use="optional">
+				<xs:annotation>
+					<xs:documentation>Name einer externen Rechtedatei, die an dieser zu grunde liegt. Diese wird geladen und dann mit der Aktuellen zusammengefügt wobei die
+						Einstellungen der aktuellen Datei Vorrang haben.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="PermissionObject">
+		<xs:annotation>
+			<xs:documentation>Ein Objekt auf das Berechtigungen vergeben werden</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Name" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Name des Objekts</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Access" type="ldap:auth" use="optional">
+			<xs:annotation>
+				<xs:documentation>Zugriffsrecht - erlauben, erben oder verbieten</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:simpleType name="auth">
+		<xs:annotation>
+			<xs:documentation>Zugriffsrecht - erlauben, erben oder verbieten</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PERMIT">
+				<xs:annotation>
+					<xs:documentation>Zugriff erlauben.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DENY">
+				<xs:annotation>
+					<xs:documentation>Zugriff verbieten.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="INHERIT">
+				<xs:annotation>
+					<xs:documentation>Zugriff vom Elternelement erben.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="Text">
+		<xs:annotation>
+			<xs:documentation>Beschriftung (Mehrsprachig)</xs:documentation>
+		</xs:annotation>
+		<xs:complexType mixed="true">
+			<xs:attribute name="Sprcd" type="xs:int" use="required">
+				<xs:annotation>
+					<xs:documentation>Sprachcode der Beschriftung</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

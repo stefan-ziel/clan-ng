@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN"
+		"http://docbook.org/xml/simple/1.1/sdocbook.dtd">
+
+<article>
+	<title>Clan ng</title>
+	<section>
+		<title>Allgemein</title>
+		<para>
+			Die Projekt wird von 3 haupt Module aufgebaut, sql-parser, common-logic und communicator-ng.
+			Und auch verschiedene submodules mit spezifischen Business Regeln, BOs und Objekte, z.B. Versicherte.
+		</para>
+
+		<section>
+			<title>Common Logic</title>
+			<para>
+				Ist für das Base Logic und allen Common Code verantwortlich.
+			</para>
+			<para>
+				Aktuell sind die Verantworlichkeiten von Common Logic:
+			</para>
+			<itemizedlist>
+				<listitem>
+					<para>
+						Common Business Regeln zu den CRUD Befehlen.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Alle die Code zum Konvertierung (JPA/Generell Konvertierung) und Datenbank
+						Zugriff wird hier implementiert.
+						Auch 'Utils' Klassen zum Helfen von gemeinsame Funktionen in der Projekt in
+						Drools, Jpa oder noch andere.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Dieser Modul gehören alle custom Spalten Typen und alle Basis Typen, bzw.
+						die basis Verhaltung aller Entities und BOs.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Gemeinsame Constraints werden hier definiert, z.B. Codes Constraints.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Session Behandlung wird hier auch definiert, die Services und Dtos dafür vorhanden.
+					</para>
+				</listitem>
+			</itemizedlist>
+		</section>
+
+		<section>
+			<title>Sql Parser</title>
+			<para>
+				Der Parser ist verantworlich für das Parsing von SQL Code. Das ist in Clan ng nützlich beim
+				Konvertierung von SQL Wheres in die Formel Sprache oder andere zu JPQL (JPA Query Language),
+				und damit kann es durch JPA bearbeitet werden.
+			</para>
+		</section>
+
+		<section>
+			<title>Communicator NG</title>
+			<para>
+				Der Communicator ist verantwortlich nur für das Frontend von Clan ng,
+				bzw. alle Kommunikation kommt hier zuerst an.
+				Dieses Modul bearbeitet  die Servlet Input
+				und mit der Hilfe von Framework-Base wird die XML abwickelt.
+			</para>
+		</section>
+
+		<section>
+			<title>Business Module</title>
+			<para>
+				Hier sind alle Module mit den echten Business Regeln. Z.B. Versicherte hat alle Regeln die
+				die CRUDS von das gelbe Teil der unten Peka Diagram koordiniert. Das is equivalent zum Code
+				check(Pre/Post)(Insert/Update/Delete) von PL/SQL, aber mit den Nutzen von Drools Engine.
+			</para>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="images/peka.svg" width="100%"/>
+				</imageobject>
+			</mediaobject>
+		</section>
+	</section>
+</article>

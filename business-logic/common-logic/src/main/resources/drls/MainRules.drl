@@ -1,0 +1,54 @@
+package drls
+
+import java.time.LocalDateTime
+import java.util.Collection
+
+import org.hibernate.query.Query
+import ch.claninfo.clanng.domain.entities.ClanEntity
+import ch.claninfo.clanng.business.logic.conversion.DtoConverter
+import org.hibernate.ScrollMode
+import org.hibernate.ScrollableResults
+
+import ch.claninfo.common.connect.Method
+import ch.claninfo.clanng.domain.entities.Pk
+import ch.claninfo.clanng.domain.entities.SplittableBo
+import ch.claninfo.clanng.domain.entities.ClanEntity
+import ch.claninfo.clanng.domain.entities.HistEntity
+import ch.claninfo.clanng.business.logic.conversion.DtoConverter
+
+import static ch.claninfo.clanng.domain.services.JpaUtils.updateDiff
+import static ch.claninfo.clanng.business.logic.conversion.DtoConverter.handledBo
+
+global org.apache.logging.log4j.Logger logger
+global javax.persistence.EntityManager em
+global ch.claninfo.clanng.session.entities.BoSession session;
+
+
+
+rule "Persist entity"
+	dialect "java"
+	salience -9
+	when
+		$entity : ClanEntity(Method.INS == method)
+		$bo : SplittableBo()
+	then
+		logger.debug("Persisting entity {}", $entity);
+		em.persist($entity);
+
+		SplittableBo $changedBo = em.find($bo.getClass(), em.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier($bo));
+		updateDiff($changedBo, $bo);
+end
+
+
+//rule "Show changed entity properties"
+//	dialect "java"
+//	when
+//		$event : PropertyChangedEvent()
+//	then
+//		logger.info("Property was changed! {}: {} -> {}",
+//			$event.getField(),
+//			$event.getOldValue(),
+//			$event.getNewValue());
+//
+//		delete($event);
+//end

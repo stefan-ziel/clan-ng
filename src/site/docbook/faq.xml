@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN"
+		"http://docbook.org/xml/simple/1.1/sdocbook.dtd">
+
+<article>
+	<title>F.A.Q.</title>
+	<section>
+		<title>Frequently Asked Questions</title>
+
+		<section>
+			<title>Lohnt sich eine portierung von PL/SQL nach drools durchzuführen?</title>
+			<para>
+				Es gibt zwei haupt Gründe zur Änderung von PL/SQL nach Drools-Engine
+				Die erste wäre, dass Drools die Business Rules Prozess viel einfachen kann.
+				Beim Hizufügen einer neuen Gesetzt z.B, kann man einfach direkt der Regel ändern.
+				In PL/SQL muss man nach jede Benutzung der Regel suchen und jede Platz ändern.
+				Zusammenfassend ein Business Rule Engine (Drools) lässt alles einfacher zu verarbeite
+			</para>
+			<para>
+				Die zweite Grund ist, PL/SQL ist sehr komplex als Business Engine und von Oracle Datenbank Abhängig.
+				Es ist mir unzulässig, dass Clan dem Kunde die Applikation nicht verkaufen kann,
+				weil nur Oracle verwendet werden kann.
+			</para>
+		</section>
+
+		<section>
+			<title>Wie ist der Performance von Drools und Datenbank Zugriffe?</title>
+			<para>
+				Nach benchmarks ist Drools keinen Engpass, sonder er is sehr Performant und viel getestet und benutzt.
+				Das einzige Problem, das wir hätten könnten, ist, die Datenbank langsam zuzugreifen.
+				Da haben wir auch kein Problem,
+				weil EhCache konfiguriert wurde und schneller als PL/SQL direkt Datenbank Zugriff sein kann.
+				Bzw. anstatt Zugriffe auf die Datenbank,
+				zugriff die Applikation für schneller Reaktionszeit auf den Cache zuerst.
+			</para>
+		</section>
+
+		<section>
+			<title>Was geschieht mit den Funktionen und Procedures in den DB-Packages?</title>
+			<para>
+				Sie werden in Drools Language übersetzt.
+				Als Beispiel gibt es schon einen POC mit dem Drools code.
+			</para>
+			<para>
+				Die eigene Code Logik wird eigentlich von Drools aufgerufen und in Java durchgeführt.
+				Der Drools Code soll alle funktionen und Business Regeln einfach steuern und nicht
+				unbedingt implementieren. Nur wenn der Logik einfach ist, dann kann sie einfach
+				dur ein DRL Regel umgesetzt werden.
+			</para>
+			<para>
+				Da die Logik von checkBR normalerweise einfach ist, wird sie sehr wahrscheinlich in
+				eine Business Regel direkt übersetzt. An sonnst doBRs sind schon komplexer, deshalb
+				werden sie höchstwarscheinlich als Java code umgesetzt und von Drools aufgerufen.
+			</para>
+		</section>
+
+		<section>
+			<title>Wenn es um den Formelinterpreter geht, was ist die Ablösung?</title>
+			<para>
+				Der Code dafür ist schon implementiert und in Devhelpers eingecheckt.
+			</para>
+		</section>
+
+
+		<section>
+			<title>Wie funktioniert der POC?</title>
+			<para>
+				Login Procedures, Errors und Verslohn BO wurden in die POC umgesetzt.
+				Das bedeutet, dass obwohl nicht alle BOs implementiert wurden,
+				der grossteste Teil der Applikation funktionieren wird.
+			</para>
+			<para>
+				Der POC hat in Moment ein Teil der Versicherte Modul implementiert, bzw. VersLohn Bo.
+				Das bedeutet, dass der POC in Swing Client funktioniert und Befehle von VersLohn durchführen kann.
+			</para>
+		</section>
+
+		<section>
+			<title>Was sind die nächste Schritte?</title>
+			<para>
+				Es fehlt noch die Übersetzung von PL/SQL nach Drools Engine
+				und die korrekt Erstellung von BOs zu Tables.
+			</para>
+		</section>
+	</section>
+</article>

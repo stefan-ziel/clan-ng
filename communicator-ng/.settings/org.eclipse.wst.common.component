@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="communicator-ng-1.1-SNAPSHOT">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <dependent-module archiveName="common-logic-1.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/common-logic/common-logic">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="framework-base-1.18-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/framework-base/framework-base">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sql-parser-1.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sql-parser/sql-parser">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="benutzer-1.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/benutzer/benutzer">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="codes-1.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/codes/codes">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jobqueue-1.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jobqueue/jobqueue">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="versicherte-1.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/versicherte/versicherte">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="communicator-ng"/>
+        <property name="java-output-path" value="/communicator-ng/target/classes"/>
+    </wb-module>
+</project-modules>

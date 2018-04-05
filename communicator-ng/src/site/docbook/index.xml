@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN"
+		"http://docbook.org/xml/simple/1.1/sdocbook.dtd">
+
+<article>
+	<title>Communicator NG</title>
+	<para>
+		Der Communicator ist verantwortlich nur für das Frontend von Clan ng,
+		bzw. alle Kommunikation kommt hier zuerst an.
+		Dieses Modul bearbeitet die Servlet Input
+		und mit der Hilfe von Framework-Base wird die XML abwickelt.
+	</para>
+</article>

@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN"
+		"http://docbook.org/xml/simple/1.1/sdocbook.dtd">
+<article>
+	<title>Clan ng (Release 7)</title>
+	<section>
+		<title>Allgemein</title>
+		<para>
+			Das PL/SQL Engine ist schon alt und hat ein Stark Abhängigkeit zur Oracle Datenbank. PL/SQL ist auch nicht
+			sehr freundlich zu Business entwicklern und auch Business Engine, bzw. diese Programmiersprache wurde so
+			gemacht, dass komplexe Probleme von Datenbank Zugriffe gelöst werden könnten.
+		</para>
+
+		<para>
+			Diese Probleme können zum Klient Verlieren, schwierige Wartung führen, deshalb müssen sie gelöst werden.
+			Dafür nutzen wir einfach Konzepte von Software Engineering, bzw. Trennung von jede Logik zu einem bestimmte
+			hoch abstrahierte Schicht. Wir fangen mit ein Persistenz- und ein Businesslogikshicht.
+		</para>
+		<para>Der Pesistenzschicht ist zuständlich einfach für das Persistenz von Businessobjekte und wird eine
+			selektierte Mechanismus durchführen. Diese Mechanismus soll unabhängig von Datenbank, Festplatte oder egal
+			welche Speicher Ziel sein.
+		</para>
+		<para>Die Business Regel sollen mit einer bestimmten Programmiersprache programmiert werden und durch die
+			Persistenzschict irgendwohin gespeichert werden. Die programmiersprache soll leicht lesbar für irgendwelche
+			Person sein und muss in ein JVM ausgeführt werden.
+		</para>
+
+		<orderedlist numeration="arabic">
+			<listitem>
+				<para>
+					<emphasis>Persistenz</emphasis>
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					<emphasis>Business Logik</emphasis>
+				</para>
+			</listitem>
+		</orderedlist>
+
+	</section>
+	<section>
+		<title>Auswahlmöglichkeiten</title>
+		<section>
+			<title>Business Objekte</title>
+			<para>
+				<emphasis>Konditionen</emphasis>
+				Die Objekte von der Datenbank existieren als viele verschieden Tabellen in verschieden Schema. Die
+				aktuelle Logik ist sehr gross und in Tabellen hart Codierte. Um die Logik zu verbessern, muss man die
+				Datenbank Tabellenmodel immer noch halten. Deshalb werden alle Tabelle als Model für das
+				Persistenzschicht verwendet.
+			</para>
+			<para>
+				<emphasis>Wie?</emphasis>
+				Damit die logik in Java code nativ aussieht, das Programmierung einfacht und weil POJOs auch gerne von
+				Framework Entwicklern genutzt werden, ist es ein deutlich Wahl Java beans zu benutzen.
+				Noch andere Gründe wären wären, dass Pojos sehr Intuitiv für jede Java Entwickler und einfach zu
+				programmieren sind.
+			</para>
+			<para>
+				<emphasis>Pojo code Beispiel:</emphasis>
+			</para>
+			<programlisting lang="java">
+				<![CDATA[public class Person {
+						private int id;
+						private String name;
+
+						public int getId() { return id; }
+						public String getName() { return name; }
+						public void setId(int id) { this.id = id; }
+						public void setName(String name) { this.name = name }
+					}]]></programlisting>
+			<para>
+				<emphasis>Beispiel Tabelle:</emphasis>
+			</para>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="images/Person Table.png" width="150px" />
+				</imageobject>
+			</mediaobject>
+			<programlisting lang="sql"><![CDATA[CREATE TABLE Person
+(
+    id BIGINT PRIMARY KEY NOT NULL,
+    name VARCHAR(300) NOT NULL
+);]]></programlisting>
+		</section>
+
+		<section>
+			<title>Persistenz</title>
+			<para>
+				<emphasis>Wie?</emphasis>
+				Wir möchten komplett Abstraktion von der unten implementierten Anwendung, bzw. wie genau die Datei
+				gespeichert, ist uns nicht relevant. Genau dafür gibt es leider keine Internet verfügbare Frameworks
+				oder Libraries.
+			</para>
+			<para>
+				<emphasis>Welche?</emphasis>
+				Es gibt viele Ansätze näher zu SQL Abstraktion, SQL, z.B. jdbc, Spring JDBC, jOOQ, ... Diese werden aber
+				unseres Ziel von komplett abstraktion nicht erreichen.
+
+				Das näherte Abstraktion unseres Ziel wäre ein Java Persistenz Framework für Java Objekte, egal was unten
+				(SQL, noSQL, xml speicher) genutzt wird. Die JPA Standard ist das ähnlichste Variante und speichert
+				einfach java Objekte irgendwie.
+			</para>
+			<para>
+				Eine ähnliche Möglichkeit wäre JDO. Die ist aber eine veraltet Framework, die zu Apache gespendet wurde.
+				Sie wird langsam entwickelt und hat kleine Unterstützung von anderen Frameworks.
+			</para>
+			<para>
+				Das klare Wahl ist dann JPA mit einem zugrundeliegenden Framework. Dafür hätten wir viele Möglichkeiten
+				(Hibernate, EclipseLink, OpenJPA, ...), die das gleich Ziel erreichen. Deshalb nehmen wir einfach das
+				schnellste und beste dokumentiert, bzw. Hibernate. Zum einfachen von Boilerplate code, kann Spring JPA
+				zusammen mit JPA codiert werden. Damit können häufig genutzte queries mit einem einzigen Spring Proxy
+				Aufruf gemacht werden.
+			</para>
+
+			<section>
+				<title>Objekt Generierung</title>
+				<para>
+					Die Business Objekte können durch einfach Konversion von DOXE XML nach Java Code generiert werden.
+					Zum nutzung und Erstellung der Business Regeln brauchen wir zwei Klassen von Objekte, eine für die
+					View und eine für die eigene Datenbank Tabelle. Für mehre Details sehen Sie
+					<link linkend="db-vs-tbl">Generierung Konfiguration</link>.
+				</para>
+				<section>
+					<title>Selects und Nutzung der Views</title>
+					<para>
+						Die Views haben Code, der leicht in andere Datenbank Syntaxen konvertiert werden können und
+						greifen normalerweise mehr als eine Tabelle zu. Um die Views in nützlich Business Objekt
+						konvertieren zu können, sollen können wir den Code der DAO Schicht so generieren, dass der Logik
+						für Tabellen Denormalization auch dort enthalten ist. Um die Leistung der SELECTs nicht zu
+						verschlechtern, soll der Datenbank das Denormalization durchführen, was mit JPA etwas schwierig
+						ist. Dann nehmen wir einfach das Beste von beiden Welten, d.h. wir führen ein portierbarer SQL
+						Code durch JPA durch und lassen die Konvertierung nach Business Objekt zum Framework.
+					</para>
+					<para>
+						Alle SQL Code kann durch JPA "createNativeQuery(nativeSqlString)" durchgeführt werden. Die Query
+						geht durch den Cache und wird als Java POJO Objekt zurückgegeben. Die query geht schnell, weil
+						alle in Speicherplatz steht, die konvertierung von ResultSet nach Objekt wird vom Framework
+						gemacht und zum Entwickler transparent zurückgegeben. Das Einfachen von Result Set Parsing und
+						die Geschwindigkeit vom Cache werden durch den Framework bearbeitet.
+					</para>
+					<para>
+						Das bedeutet, dass wir immer mehr zwei verschiedenen Objekt Typen brauchen, ein für die View
+						und ein für die echte Tabelle. Die View Objekt wird nur mit Lesezugriff benutzt, die andere
+						werden normal mit Schreibberechtigung benutzt.
+					</para>
+					<para>
+						Jede DTO soll ein DAO haben. Viele Methoden von jeden DAO können durch Spring JPA generiert
+						werden und durch konfiguration, die Berechtigungen jeder DAO durchsetzen. Zur
+						gleichen Funktion gibt es schon XSL in Clan Module die java Repository Klassen generieren.
+					</para>
+				</section>
+			</section>
+			<section>
+				<title>Tabellencode Generierung</title>
+				<para>
+					Die Generierung der Tabellen kann noch einmal durch DOXE XML generiert werden. DOXE enthält die
+					Spalten und ihre Typen. Hier ist es nötig eine Konfiguration der Tabellen zu machen, wenn die
+					Tabellen zu verschiedenen Datenbanken gehören. Darüber wird es noch diskutiert
+					(<link linkend="performance">Wie</link>).
+				</para>
+			</section>
+		</section>
+
+		<section>
+			<title>Business Rules</title>
+
+			<para id="intro-business-rules">
+				<emphasis>Wie?</emphasis>
+				Jede Business Regel muss in einem bestimmten Programmiersprache geschrieben und jede Business Regel
+				muss durchgeführt werden, wenn ihre Kondition gilt.
+				Jede Regel soll so konfiguriert werden können, dass jede Regel andere abhängige Regel haben kann.
+			</para>
+
+			<para>
+				<emphasis>Welches Engine?</emphasis>
+				Das Tools soll ein komplett Framework sein, damit auch die Personen Verantwortlich für die Fachkonzept,
+				bzw. Business Analysts, besser arbeiten können. Die Regeln könnten entweder durch ein workflow Engine
+				oder durch ein Business Rule Engine umgesetzt werden.
+			</para>
+			<para>
+				Ein Workflow besteht aus einer Konstante fluss von bestimmten Arbeiten. In einem Business Rule
+				Engine verschiedene Regeln gelten verschiedene Regeln Abhängig von seine Konditionen. Clans Business
+				Case ist enthält viele Regeln die nach verschieden Konditionen durchgeführt werden sollen oder nicht.
+				Deshalb gilt es in diesen Fall ein Business Rule Engine besser.
+				(Siehe auch:
+				<ulink url="http://www.flexrule.com/archives/workflow-engine-or-business-rule-engine/">Business rule
+					engine vs Workflow engine</ulink>).
+			</para>
+
+			<para>
+				<emphasis>Welches Tool?</emphasis>
+				Für ein Business Rule Engine hätten wir die Möglichkeiten für eine komplett Framework, die die
+				Erstellung von Business Regeln einfacht, auch mit ein Web framework, Listeners und andere
+				Funktionalitäten. Die zweite Variante ist eine Einfache Implementierung von Business Regel direkt auf
+				Java Code. Beispiel für den letzten Fall wäre Easy Rules oder eine eigene Framework zu entwicklen.
+			</para>
+
+			<para>
+				Wie früher geschrieben (<link linkend="intro-business-rules">Wie?</link>), die erste Variante wird für uns besser
+				gelten. Für diese Variante gibt es die Möglichkeiten IBM ILog oder Drools. In IBM ILog kann man alle
+				Business Regeln einfach durch ein Autocomplete System und natürliche Sprache. Dies ist aber ein
+				bezahltes Tools und wird abgelegt. Die zweite Variante Drools ist weltweit benutzt, wird lange von
+				Redhat entwickelt und ist ein komplett Framework wie wir brauchen.
+			</para>
+		</section>
+	</section>
+
+	<section>
+		<title>Fluss-Diagram</title>
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="images/workflow.svg" align="center" width="500px" format="SVG"/>
+			</imageobject>
+		</mediaobject>
+	</section>
+	<section id="performance">
+		<title>Leistungsverbesserungen</title>
+		<para>
+			<emphasis>Aktuelles Problem</emphasis>
+			Es gibt Datenbank Queries, die zu langsam durch die Datenbank gehen. Da sie so langsam sind, sind sie gar
+			nicht praktisch auf die Haupt Anwendung Client. Um dieses Problem zu mildern, schlagen wir vor folgende
+			Lösungen.
+		</para>
+
+
+		<section>
+			<title>Lösungen</title>
+			<para>
+				<emphasis>Verschiedene Datenbank typen</emphasis>
+				Es gibt einige Tabellen auf die Schema ALOW (-leiber), die einfach durch ein Key-Document Store
+				repräsentiert werden können. Dafür gibt es bewährte Lösungen im Markt.
+				D.h. alle Zugriffe auf diese Tabellen könnten schneller werden, wenn sie auf eine besonders gestaltet
+				Datenbank gemacht würden.
+			</para>
+			<para>
+				Das vorgeschlagene Persistenzschicht würde für den Entwickler alle Datenbank Zugriffe
+				steuern, bzw. eine extra Datenbank könnte einfach installiert werden. Alles was man brauchen würde,
+				wären Konfigurationen für die Verknüpfung von Tabellen und Datenbank, z.B. Tabelle A gehört zur
+				Datasource B.
+			</para>
+			<para id="db-vs-tbl">
+				Die Code Generierung für die DAOs würde immer im Auge behalten, dass die Tabelle immer auf die Korrekt
+				Datenbank zugegriffen würden. Die Generierung hätte also eine Konfigurationsdatei mit einer Verknüpfung
+				von Standard Tabellen und Standard Datenbank und dann eine list von nicht normale Tabellen die auf
+				andere Datenbanken bleiben würden.
+			</para>
+
+			<para>
+				<emphasis>Datenbank Cache</emphasis>
+				Ein regelmäßig benutzte Lösung für wiederholter Zugriff auf dieselben Daten ist Cache. Mit JPA ist es
+				ein Wahl von der Implementierung Schicht, mit Hibernate z.B. gibt es EHCache, OSCache, SwarmCache
+				und JBoss Cache.
+				Das komplettest und am meisten dokumentierte Lösung ist EHCache und wird deswegen gewählt.
+			</para>
+			<para>
+				Egal welche Cache Implementierung benutzt wird, das Manipulieren der Cache Datei wird immer durch
+				Hibernates CacheImpl Klasse gesteuert und wird immer transparent gemacht. Die Konfiguration des Caches
+				kann nur das Verhalten des Caches steuern, d.h. 'read only' für Datenbank nur mit Lese Zugriff,
+				'read/write' die auch für Schreiben gilt und das letzte 'nonstrict read/write' für seltene geschriebene
+				Daten. An sonnst gibt es auch kleine und hier nicht relevante Optionen.
+			</para>
+			<para>
+				Auch wichtig zu diesem Thema ist, dass JPA Cache effektiv versteckt findById Such arten oder gleich
+				gemacht Suchqueries. Das bedeutet, dass verschiedene Queries, die Ergebnis gecached haben konnten,
+				werden nicht in Cache gesucht. Z.B. haben wir alle in eine kleine Tabelle A alle Zeilen ausgesucht.
+				Später macht die Anwendung noch ein 'SELECT' mit 'WHERE', in diesen Fall werden die Ergebnis nicht in
+				Cache gesucht sondern direkt auf die Datenbank. Wenn die Suche direkt auf den Cache gemacht werden
+				sollte, bräuchten wir eine besondere Algorithmus für die bestimmte Tabelle in Haus entwickelt, um das
+				korrekte Verhalten zu erreichen.
+			</para>
+
+			<para>
+				<emphasis>In-Memory Datenbanken</emphasis>
+				Eine Datenbank, die alle Datei auf Speicherplatz hält wäre theoretisch die schnellste und einfachste
+				Möglichkeit. Damit müsste man keine Änderung im Code umsetzen, nur die mögliche Änderung von Datenbank
+				Dialekt.
+			</para>
+			<para>
+				Die leichtest (wenigsten Änderungen) Variante für In-Memory Datenbank wäre "Oracle In-Memory Option".
+				Mit dem muss man keine Änderung in Application Code machen, aber die neue Geschwindigkeit jedes Zugriff
+				wird viel schneller.
+			</para>
+			<para>
+				Zum genau Wissen von welchem genau Umsetzung das Beste wäre, müssen jede alternative weiter analysiert
+				werden. Es gibt aber viele gut etabliert Optionen dafür, so wie SAP HANA, Oracle TimesTen, VoltDB, DB2
+				BLU,
+				Sql Server Option. Als Bezug:
+				<ulink url="http://searchdatamanagement.techtarget.com/feature/Which-in-memory-DBMS-best-fits-your-companys-needs">
+					In-Memory Databases
+				</ulink>
+				.
+			</para>
+		</section>
+
+	</section>
+	<section>
+		<title>Tests</title>
+		<para>
+			Um das Verhalten der Anwendung gleich zu halten, brauchen wir das gleiche Ergebnis mit dem neuen und
+			alten Frameworks. Das bedeutet, dass für jede Input X, soll das Webservice die Output Y zurückgeben. Das
+			kann durch leicht Programmierung durch ein Tool so wie SoapUI getestet werden.
+		</para>
+
+		<para>
+			Man soll eine Reihe von Input Tests schreiben, von welchen, die Ergebnisse sollen das gleiche für zwei Test
+			Servers sein. Ein Test server enthält die alte Logik und die andere die neue. Jede Server würde den
+			Datenbankzustand verändern, das bedeutet, dass ein Set von Betriebe soll immer stattfinden, bzw. für alle
+			Betriebe, die die Datenbank ändern, muss ein Rollback Betrieb auch stattfinden.
+		</para>
+		<para>
+			Diese Logik kann leicht durch ein Webservice Test Tool entwickelt werden, nur das Schreiben der Inputs kann
+			dauerhaft sein.
+		</para>
+
+		<para>
+			<emphasis>SoapUI</emphasis>
+			ist ein Beispiel solches Tool, sein haupt Job ist xml an den Server zu schicken. Jede XML hat sein
+			Reihenfolge und andere Parameter durchen den Tool gesteuert.
+		</para>
+		<para>
+			Es gibt andere Tools, die diese Aufgaben erreichen können, aber SoapUI wird bevorzugt. Weil es
+			schon Kenntnis der Nutzung in Clan Brasilien existiert und die Automatisierung der Tests schon leicht
+			gemacht wird.
+		</para>
+	</section>
+</article>
+		<!--https://www.sitepoint.com/sql-vs-nosql-differences/-->
+		<!--https://www.quora.com/Does-it-make-sense-to-combine-both-NoSQL-and-SQL-Why-->

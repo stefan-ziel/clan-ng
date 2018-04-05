@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN"
+		"http://docbook.org/xml/simple/1.1/sdocbook.dtd">
+
+<article>
+	<title>Benutzer</title>
+	<para>Behandelt die Benutzer Modul, bzw. alle was mit dem Login Regeln zu tun hat.</para>
+	<para>Dieses Modul enthält DTOs für den Nutzer, seine Rollen und die Berechtigungen
+		und auch die Services für diesen Bereich.</para>
+</article>

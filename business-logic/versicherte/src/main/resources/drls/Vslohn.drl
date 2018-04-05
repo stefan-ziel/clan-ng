@@ -1,0 +1,77 @@
+package drls
+
+import ch.claninfo.common.connect.Method
+import ch.claninfo.clanng.versicherte.entities.Vslohn
+import ch.claninfo.clanng.versicherte.entities.Verspend
+import ch.claninfo.clanng.business.logic.exceptions.BrException
+
+import function ch.claninfo.clanng.versicherte.brs.VsstammBr.isActive
+import function ch.claninfo.clanng.versicherte.brs.VsstammBr.isValidWageDate
+import function ch.claninfo.clanng.versicherte.brs.VerspendBr.hasPendencies
+import function ch.claninfo.clanng.business.logic.exceptions.BrException.raise
+
+global org.apache.logging.log4j.Logger logger
+
+//Check Inactive
+rule "BR10400"
+	dialect "java"
+	salience 1
+	when
+		$vslohn : Vslohn()
+		eval(!isActive(em, $vslohn.getVsnum()))
+	then
+		logger.debug("Inactive vsnum: '{}'", $vslohn);
+		raise(10400);
+end
+
+rule "Set default pendency"
+	dialect "java"
+	salience 2
+	when
+		$vslohn : Vslohn(method == Method.INS)
+	then
+		$vslohn.setPendenz((byte) 1);
+end
+
+//Check Pendencies
+rule "BR20000"
+	dialect "java"
+	salience 1
+	when
+		$vslohn : Vslohn()
+		eval(hasPendencies(em, $vslohn.getVsnum(), $vslohn.getGdat()))
+	then
+		logger.debug("Has pendencies: '{}'", $vslohn);
+		raise(20001);
+end
+
+//Check valid wage date
+rule "BR20100"
+	dialect "java"
+	salience 1
+	when
+		$vslohn : Vslohn(method == Method.INS)
+		eval(!isValidWageDate(em, $vslohn.getVsnum(), $vslohn.getGdat()))
+	then
+		logger.debug("Invalid wage date: '{}'", $vslohn);
+		$vslohn.delete();
+		raise(20101);
+end
+
+
+//Create pendency
+rule "BR10600"
+	dialect "java"
+	salience -1
+	when
+		$vslohn : Vslohn(method == Method.INS || method == Method.DEL)
+	then
+		Verspend $verspend = new Verspend();
+		$verspend.setVsnum($vslohn.getVsnum());
+		$verspend.setBerdat($vslohn.getGdat());
+		$verspend.setBercd("LOM");
+		$verspend.setBerstat(false);
+
+		logger.debug("Creating pendency {}", $verspend);
+		insert($verspend);
+end

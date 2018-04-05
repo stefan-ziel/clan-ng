@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>webapp-clan</groupId>
+		<artifactId>clan-ng</artifactId>
+		<version>1.1-SNAPSHOT</version>
+		<relativePath>../..</relativePath>
+	</parent>
+
+	<artifactId>jobqueue</artifactId>
+	<packaging>jar</packaging>
+	<name>Asynchronous job executions.</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>get-common</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>database</groupId>
+									<artifactId>database-common</artifactId>
+									<classifier>rad</classifier>
+									<outputDirectory>target/database-common/src/clan-rad</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>build</groupId>
+				<artifactId>xml-generate-mojo</artifactId>
+				<executions>
+					<execution>
+						<id>Generate BO's</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<relativePath>target/database-common/src/clan-rad</relativePath>
+							<projectName>common</projectName>
+							<outDir>target/generated-sources/dao</outDir>
+							<generator>
+								<param>/ch/claninfo/generator/rad2/javacrud/clan-bo.xsl</param>
+							</generator>
+							<modul>common</modul>
+							<names>Jobdeflog Joblog Auftrag Auftragsmeldung JobDef JobInstruktion JobDefSort Jobchain</names>
+						</configuration>
+					</execution>
+				</executions>
+				<inherited>false</inherited>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>target/generated-sources/dao</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>webapp-clan</groupId>
+			<artifactId>common-logic</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz-oracle</artifactId>
+			<version>2.1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>webapp-clan</groupId>
+			<artifactId>codes</artifactId>
+		</dependency>
+	</dependencies>
+</project>

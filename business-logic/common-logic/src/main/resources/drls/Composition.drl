@@ -1,0 +1,41 @@
+import java.util.Collection
+
+import ch.claninfo.clanng.domain.entities.ClanEntity
+import ch.claninfo.clanng.business.logic.conversion.DtoConverter
+
+rule "Split BO into entities"
+	salience 0
+	dialect "java"
+	when
+		$bo : SplittableBo(!split)
+	then
+		logger.debug("Splitting bo: '{}'", $bo);
+		Collection<ClanEntity> entities = DtoConverter.toEntity($bo);
+		if(!entities.isEmpty()) {
+			$bo.markSplit();
+			for(ClanEntity entity: entities) {
+				insert(entity);
+			}
+		}
+		$bo.clearDirty();
+end
+
+rule "Remove processed bos"
+	dialect "java"
+	salience -100
+	when
+		$bo : SplittableBo()
+	then
+		delete($bo);
+		logger.debug("Deleted bo: '{}'", $bo);
+end
+
+rule "Remove processed entity"
+	dialect "java"
+	salience -100
+	when
+		$entity : ClanEntity()
+	then
+		delete($entity);
+		logger.debug("Deleted entity: '{}'", $entity);
+end

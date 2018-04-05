@@ -1,0 +1,47 @@
+import ch.claninfo.common.connect.Method
+import ch.claninfo.clanng.domain.entities.SplittableBo
+
+import function ch.claninfo.clanng.business.logic.conversion.DtoConverter.handledBo
+import function ch.claninfo.clanng.domain.services.JpaUtils.updateDiff
+
+rule "Persist unhandled Bo"
+	dialect "java"
+	salience 100
+	when
+		$bo : SplittableBo(!split && method == Method.INS)
+		eval(!handledBo($bo))
+	then
+		em.persist($bo);
+end
+
+rule "Delete unhandled Bo"
+	dialect "java"
+	salience 100
+	when
+		$bo : SplittableBo(!split && method == Method.DEL)
+        eval(!handledBo($bo))
+	then
+		SplittableBo attachedBo = em.find($bo.getClass(), em.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier($bo));
+		em.remove(attachedBo);
+end
+
+rule "Update unhandled Bo"
+	dialect "java"
+	salience 100
+	when
+		$bo : SplittableBo(!split && method == Method.UPD)
+        eval(!handledBo($bo))
+	then
+		SplittableBo attachedBo = em.find($bo.getClass(), em.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier($bo));
+		updateDiff($bo, attachedBo);
+end
+
+rule "Remove unhandled Bos"
+	dialect "java"
+	salience 90
+	when
+		$bo : SplittableBo(!split)
+		eval(!handledBo($bo))
+	then
+		delete($bo);
+end
